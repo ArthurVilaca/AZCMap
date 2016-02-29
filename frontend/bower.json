@@ -1,0 +1,6 @@
+{
+  "name": "zicaMap",
+  "dependencies": {
+    "angular": "~1.4"
+  }
+}
