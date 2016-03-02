@@ -1,7 +1,12 @@
 {
-  "name": "zicaMap",
+  "name": "zica-map",
+  "version": "0.1.0",
   "description": "A map",
   "dependencies": {
-    "express": "^4.10.2"
-  }
+    "express": "^4.10.2",
+    "lodash": "^4.5.1",
+    "serve-favicon": "^2.3.0",
+    "mongoose": "^4.4.5"
+  },
+  "license": "MIT"
 }
