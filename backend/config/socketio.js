@@ -4,16 +4,16 @@
 
 'use strict';
 module.exports = function(io) {
-    io.on('connection', function (socket) {
+    io.on('connection', function (client) {
         console.log('new connection');
         
-        socket.on('new user', function (data) {
+        client.on('new user', function (data) {
             console.log(data);
         });
         
-        require('../api/marker/marker.socket')(socket);
+        require('../api/marker/marker.socket').register(client);
         
-        socket.on('disconnect', function(){
+        client.on('disconnect', function(){
             console.log('user disconnected');
         });
     });    

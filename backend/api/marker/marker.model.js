@@ -13,7 +13,7 @@ var MarkerSchema = new Schema({
  * Virtuals
  */
 
-// Public map information
+// Public marker information
 MarkerSchema
   .virtual('public')
   .get(function() {

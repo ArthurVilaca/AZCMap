@@ -5,22 +5,22 @@ var Marker = require('./marker.model');
 //Use this to logic validation errors
 function validationError(res, statusCode) {
   statusCode = statusCode || 422;
-  return function(err) {
-    res.status(statusCode).json(err);
+  return function (err) {
+    res.status(statusCode).json({ error: err });
   }
 }
 
 //Use this to handle errors (in catches)
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
-  return function(err) {
-    res.status(statusCode).send(err);
+  return function (err) {
+    res.status(statusCode).send({ error: err });
   };
 }
 
 function respondWith(res, statusCode) {
   statusCode = statusCode || 200;
-  return function() {
+  return function () {
     res.status(statusCode).end();
   };
 }
@@ -28,30 +28,26 @@ function respondWith(res, statusCode) {
 /**
  * Creates a new Marker
  */
-exports.create =  function (req, res, next) {
+exports.create = function (req, res, next) {
   //AN EXAMPLE OF HOW IT COULD BE
   var data = req.body;
   var newMarker = new Marker(data);
-
-  newMarker.save(function(marker, err) {
-      if(err) {
-          return validationError(res);
-      }
-      res.json({marker});
-  });
-}
+  newMarker.save().then(() => {
+    res.json({ data: newMarker });
+  }).catch(validationError(res));
+};
 
 
 /**
  * Get all Markers
  */
 exports.all = function (req, res, next) {
-    //Marker.find...
-}
+  //Marker.find...
+};
 
 /**
  * Deletes a Marker
  */
 exports.destroy = function (req, res) {
-    
-}
+
+};

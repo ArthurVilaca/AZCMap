@@ -9,30 +9,30 @@ var MarkerEvents = require('./marker.events');
 // Model events to emit
 var events = ['save', 'remove'];
 
- function register(socket) {
+//client: the client that was connected
+ function register(client) {
   // Bind model events to socket events
   for (var i = 0, eventsLength = events.length; i < eventsLength; i++) {
     var event = events[i];
-    var listener = createListener('marker:' + event, socket);
+    var listener = createListener('marker:' + event, client);
 
     MarkerEvents.on(event, listener);
-    socket.on('disconnect', removeListener(event, listener));
+    client.on('disconnect', removeListener(event, listener));
   }
 }
 
 
-function createListener(event, socket) {
+function createListener(event, client) {
   return function(doc) {
     console.log("added a marker");
-    socket.emit(event, doc);
+    client.emit(event, doc);
   };
 }
 
 function removeListener(event, listener) {
   return function() {
-   console.log("removeu");
     MarkerEvents.removeListener(event, listener);
   };
 }
 
-module.exports = register;
+exports.register = register;

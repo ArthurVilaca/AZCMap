@@ -5,6 +5,8 @@ var config = require('./config/environment');
 var http = require('http');
 var mongoose = require('mongoose');
 
+//Use node's default Promise with then and catch as the mongoose promise system
+mongoose.Promise = global.Promise;
 // Connect to MongoDB
 mongoose.connect(config.mongo.uri, config.mongo.options);
 mongoose.connection.on('error', function(err) {
