@@ -7,12 +7,9 @@
 		<link rel="stylesheet" href="assets/css/styles.css"></link>
     <script src="bower_components/socket.io-client/socket.io.js"></script>
 	</head>
-	<body ng-controller="MapCtrl">
-    <ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>
+	<body ng-controller="MapCtrl as MapCtrl">
+    <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'></ui-gmap-google-map>
     
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHdrTrrlUvUOMsU7SdCvZgKEUvutZL4HQ&callback=initMap()"
-    async defer></script>
-
     <script src="bower_components/angular/angular.min.js"></script>
 
     <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
@@ -20,8 +17,7 @@
     <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
 
     <script src="bower_components/lodash/dist/lodash.min.js"></script>
-
-    <script src="assets/js/map.js"></script>
+    <script src="assets/js/app.js"></script>
 
   </body>
 </html>
