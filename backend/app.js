@@ -23,6 +23,7 @@ require('./config/socketio')(io);
 require('./config/express')(app);
 require('./routes')(app);
 
-server.listen(config.port, config.ip, function(){
+//config.ip won't be used in Azure
+server.listen(config.port, function(){
   console.log('listening on *:%d, in %s mode', config.port, config.env);
 });
