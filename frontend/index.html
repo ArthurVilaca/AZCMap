@@ -10,7 +10,7 @@
     <body >
     <header><h1>AZC MAP</h1></header>
         <section id="main-box">
-            <div ng-controller="MapCtrl" id="main-map">
+            <div ng-controller="MapCtrl as MapCtrl" id="main-map">
             <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'></ui-gmap-google-map>
 
             <script src="bower_components/angular/angular.min.js"></script>
