@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html ng-app="zicaMap">
-	<head>
-		<title>ZicaMap</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="initial-scale=1.0">
-		<link rel="stylesheet" href="assets/css/styles.css"></link>
+    <head>
+        <title>ZicaMap</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1.0">
+        <link rel="stylesheet" href="assets/css/styles.css"></link>
     <script src="bower_components/socket.io-client/socket.io.js"></script>
-	</head>
-	<body ng-controller="MapCtrl as MapCtrl">
-    <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'></ui-gmap-google-map>
-    
-    <script src="bower_components/angular/angular.min.js"></script>
+    </head>
+    <body >
+    <header><h1>AZC MAP</h1></header>
+        <section id="main-box">
+            <div ng-controller="MapCtrl" id="main-map">
+            <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'></ui-gmap-google-map>
 
-    <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
+            <script src="bower_components/angular/angular.min.js"></script>
 
-    <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
+            <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
 
-    <script src="bower_components/lodash/dist/lodash.min.js"></script>
-    <script src="assets/js/app.js"></script>
+            <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
 
+            <script src="bower_components/lodash/dist/lodash.min.js"></script>
+
+            <script src="assets/js/app.js"></script>
+        </div>
+        <div id="main-sidebar">
+            <a href="">Testando 1 2 3</a>
+        </div>
+        </section>
   </body>
 </html>
