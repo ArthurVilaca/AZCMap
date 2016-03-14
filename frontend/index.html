@@ -6,7 +6,7 @@
         <meta name="viewport" content="initial-scale=1.0">
         <link rel="stylesheet" href="assets/css/styles.css"></link>
         <script src="bower_components/socket.io-client/socket.io.js"></script>
-
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
     </head>
     <body ng-controller="MapCtrl as MapCtrl">
@@ -14,8 +14,13 @@
 
     </header>
 
-    
         <section id="main-box">
+            <div ng-controller="AppCtrl as AppCtrl">
+                <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)"><i class="fa fa-plus"></i>
+                    <ng-md-icon icon="add"></ng-md-icon>
+                </md-button>
+            </div>
+
             <button ng-click="changeMarker();" id="btShow">Nome do botão</button>
             <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'></ui-gmap-google-map>
 
@@ -28,8 +33,13 @@
         <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
         <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
         <script src="bower_components/lodash/dist/lodash.min.js"></script>
-        <script src="assets/js/app.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
         
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+
+        <script src="assets/js/app.js"></script>
+
   </body>
 </html>
