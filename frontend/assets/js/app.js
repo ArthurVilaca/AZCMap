@@ -17,13 +17,6 @@
       }
     };
     
-    $scope.newmarker = false;
-    $scope.changeMarker = function () {
-      if(!$scope.newmarker)
-      $scope.newmarker = true;
-    else
-      $scope.newmarker = false;
-    }
     var socket = $window.io();
     
     $scope.map = { center: { latitude: -19.9304862, longitude: -43.9450135 }, zoom: 13 };
@@ -89,7 +82,7 @@
         'default': '500',
         'hue-1': '50'
       })
-      .accentPalette('pink');
+      .accentPalette('red');
     $mdThemingProvider.theme('input', 'default')
           .primaryPalette('grey')
   });
