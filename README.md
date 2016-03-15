@@ -59,7 +59,7 @@ Thats it, you can go to localhost:3000 in your browser and the application shoul
 
 open git bash.
 
-Go to the folder where the repository is located (Ex: /c/Repos/AZCMap)
+Go to the folder where the repository is located (E.g.: /c/Repos/AZCMap)
 
 run: ```$ git checkout -b branch-name```
 
