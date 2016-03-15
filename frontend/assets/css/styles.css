@@ -2,80 +2,66 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-
 	font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
-	background-color: #fff; 
-	background-image: 
-	linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-	linear-gradient(#eee .1em, transparent .1em);
-	background-size: 100% 1.2em;
 }
 
-header {
-	background: transparent linear-gradient(#8C8C8C, #000) repeat scroll 0% 0%;
-	padding: 5px;
-	text-align: center;
-	color: #FFF;
-	text-shadow: 0px -1px 1px #222;
-	width: 100%;
-	left: 0px;
-	transition: all 0.3s ease 0s;
-	margin-bottom: 25px;
-
- h1 {
-    position: absolute;
-    left: 20px;
-    top: 20px;
-    color: white;
-    font-size: 32px;
-  }
-}
-
-#map {
-	height: 50px;
+#main-box {
+position: absolute;
+height: 100%;
+width: 100%;
+z-index: 0;
 }
 
 .angular-google-map-container { 
-	min-height: 500px;
-	max-height: auto;
-	width: auto;
-	margin: 10px;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
 }
 
-#main-map {
-	top: 50px;
-	border: 5px solid rgba(101, 101, 101, 0.69);
-  border-radius: 5px;
-	float: right;
-	width: 78%;
-	height: auto;
-	box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6) inset;
+/*@media only screen 
+  and (max-width: 736px) { 
+  .mobile {
+    display:block;
+  }
+  .desktop {
+    display:none;
+  }
+  .tablet {
+    display:none;
+  }
 }
 
-#main-sidebar {
-	top: 50px;
-	height: 519px;
-	float: left;
-	width: 20%;
-	background: transparent linear-gradient(#8C8C8C, #000) repeat scroll 0% 0%;
-	border: 5px solid rgba(101, 101, 101, 0.69);
-  border-radius: 5px;
-	box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6) inset;
-	transition: margin-right 0.3s ease-in-out 0s;
-
-	font-size: 16px;
+@media only screen 
+  and (min-width: 736px) 
+  and (max-width: 1200px){ 
+  .tablet {
+    display:block;
+  }
+  .desktop {
+    display:none;
+  }
+  .mobile {
+    display:none;
+  }
 }
 
-#main-sidebar a {
-		display: block;
-		background: transparent linear-gradient(#3E3E3E, #383838) repeat scroll 0% 0%;
-		border-top: 1px solid #484848;
-		border-bottom: 1px solid #2E2E2E;
-		color: #FFF;
-		padding: 15px;
-		text-decoration: none;
-}
+@media only screen 
+  and (min-width: 1200px) {
+  .desktop {
+    display:block;
+  }
+  .tablet {
+    display:none;
+  }
+  .mobile {
+    display:none;
+  }
+}*/
 
-#main-sidebar a:hover{
-	background: transparent linear-gradient(#484848, #383838) repeat scroll 0% 0%;
-}
+
+
+
+.toolbardemoBasicUsage md-toolbar md-icon.md-default-theme {
+  color: white; }
+
