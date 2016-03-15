@@ -32,22 +32,6 @@
                     </md-button>
                   </div>
                 </md-toolbar>
-               
-
-
-
-<!--                 <div ng-app="myapp">
-                    <div layout="row" ng-controller="sidenavCtrl">
-                        <md-sidenav md-component-id="left" md-is-open="isSidenavOpen" class="md-sidenav-left">
-                            Left Nav!
-                        </md-sidenav>
-                         <md-content>
-                          </md-content>
-                    </div>
-                </div>
-
- -->
-
                 <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)"><i class="fa fa-plus"></i>
                     <ng-md-icon icon="add"></ng-md-icon>
                 </md-button>
@@ -56,24 +40,6 @@
             
         </section>
 
-
-
-
-<script type="text/javascript">
-    var app = angular.module('myapp', ['ngMaterial']);
-
-app.controller('sidenavCtrl', function($scope, $mdSidenav) {
-  $scope.isSidenavOpen = false;
-    
-  $scope.openLeftMenu = function() {
-    $mdSidenav('left').toggle();
-  };
-    
-  $scope.$watch('isSidenavOpen', function(isSidenavOpen) {
-      alert('sidenav is ' + (isSidenavOpen ? 'open' : 'closed'));
-  });
-});
-</script>
         <script src="bower_components/angular/angular.min.js"></script>
         <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
         <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
