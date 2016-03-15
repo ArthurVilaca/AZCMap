@@ -87,6 +87,5 @@
     $mdThemingProvider.theme('input', 'default')
           .primaryPalette('grey')
   });
-
-
+  
 })();
