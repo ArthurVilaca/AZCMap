@@ -14,7 +14,8 @@
       streetViewControl: false,
       mapTypeControlOptions: {
         position: 10
-      }
+      },
+        zoomControl: false
     };
     
     var socket = $window.io();
