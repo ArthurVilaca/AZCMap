@@ -21,3 +21,16 @@ z-index: 0;
 
 .toolbardemoBasicUsage md-toolbar md-icon.md-default-theme {
   color: white; }
+
+
+.md-padding {
+	width: 90%;
+	height: 80%;
+}
+
+.md-actions {
+	position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

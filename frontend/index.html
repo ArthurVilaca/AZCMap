@@ -18,26 +18,26 @@
                 <md-toolbar style="position: absolute; z-index: 50; background-color: rgb(255, 82, 82);">
                   <div class="md-toolbar-tools">
                     <md-button class="md-icon-button" aria-label="Settings">
-                      <md-icon md-svg-icon="assets/img/menu.svg" ></md-icon>
+                      <i class="fa fa-bars"></i>
                     </md-button>
                     <h2>
                       <span>MAPA DE CASOS - AEDES AEGYPT</span>
                     </h2>
                     <span flex></span>
                     <md-button class="md-icon-button" aria-label="Favorite">
-                      <md-icon md-svg-icon="assets/img/favorite.svg"></md-icon>
+                      <i class="fa fa-heart"></i>
                     </md-button>
                     <md-button class="md-icon-button" aria-label="More">
-                      <md-icon md-svg-icon="assets/img/more_vert.svg"></md-icon>
+                      <i class="fa fa-ellipsis-v"></i>
                     </md-button>
                   </div>
                 </md-toolbar>
-                <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)"><i class="fa fa-plus"></i>
+                <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)">
                     <ng-md-icon icon="add"></ng-md-icon>
+                    <i class="fa fa-plus"></i>
                 </md-button>
                 <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'></ui-gmap-google-map>
             </div>
-            
         </section>
 
         <script src="bower_components/angular/angular.min.js"></script>
