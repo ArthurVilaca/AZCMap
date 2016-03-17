@@ -34,6 +34,13 @@
 
 }).controller('AppCtrl', ['$scope', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog){
  
+    $scope.radioData = [
+      { label: '1', value: 1 },
+      { label: '2', value: 2 },
+      { label: '3', value: '3', isDisabled: true },
+      { label: '4', value: '4' }
+    ];
+
     $scope.showAdd = function(ev) {
       $mdDialog.show({
         controller: DialogController,
@@ -42,6 +49,11 @@
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.adress" placeholder="Endereço..."> </md-input-container> </div> '+
         '<md-input-container flex> <label>Comentarios..</label> <textarea ng-model="user.comments" md-maxlength="150"></textarea> </md-input-container> </form> </md-content> '+
         // '<ui-gmap-google-map></ui-gmap-google-map>'+
+        '<md-radio-group ng-model="data.group1">'+
+        '<md-radio-button value="Apple" class="md-primary">Foco do mosquito</md-radio-button>'+
+        '<md-radio-button value="Banana">Caso de Zica</md-radio-button>'+
+        '<md-radio-button value="Mango">Caso de Dengue</md-radio-button>'+
+        '</md-radio-group>'+
         '<div class="md-actions" layout="row"> <span flex></span> '+
         '<md-button ng-click="answer(\'not useful\')"> Cancel </md-button> '+
         '<md-button ng-click="answer(\'useful\')" class="md-primary"> Save </md-button> </div></md-dialog>',
