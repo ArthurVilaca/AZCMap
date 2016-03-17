@@ -17,7 +17,7 @@
             <div ng-controller="AppCtrl as AppCtrl" id="main-box">
                 <md-toolbar style="position: absolute; z-index: 50; background-color: rgb(255, 82, 82);">
                   <div class="md-toolbar-tools">
-                    <md-button class="md-icon-button" aria-label="Settings">
+                    <md-button class="md-icon-button" ng-click="toggleLeft();" aria-label="Settings">
                       <i class="fa fa-bars"></i>
                     </md-button>
                     <h2>
@@ -32,6 +32,21 @@
                     </md-button>
                   </div>
                 </md-toolbar>
+                <md-sidenav
+                    class="md-sidenav-left"
+                    md-component-id="left"
+                    md-is-locked-open="$mdMedia('gt-md')"
+                    md-disable-backdrop
+                    md-whiteframe="4">
+                  <md-toolbar class="md-theme-indigo">
+                    <h1 class="md-toolbar-tools">Estatisticas</h1>
+                  </md-toolbar>
+                  <md-content layout-padding ng-controller="LeftCtrl">
+                    <md-button ng-click="close()" class="md-primary" hide-gt-md>
+                      Fechar
+                    </md-button>
+                  </md-component-ident>
+                </md-sidenav>
                 <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)">
                     <ng-md-icon icon="add"></ng-md-icon>
                     <i class="fa fa-plus"></i>

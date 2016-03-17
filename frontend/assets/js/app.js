@@ -9,7 +9,7 @@
     });
   });
   
-  app.controller("MapCtrl", ['$scope', '$window', function($scope, $window) {
+  app.controller("MapCtrl", ['$scope', '$window', '$mdSidenav',  function($scope, $window, $mdSidenav) {
     this.options = {
       streetViewControl: false,
       mapTypeControlOptions: {
@@ -22,7 +22,17 @@
     
     $scope.map = { center: { latitude: -19.9304862, longitude: -43.9450135 }, zoom: 13 };
 
-  }]).controller('AppCtrl', ['$scope', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog){
+    $scope.toggleLeft = function() {
+      $mdSidenav('left').toggle();
+    };
+
+}]).controller('LeftCtrl', function($scope, $mdSidenav) {
+  
+  $scope.close = function() {
+    $mdSidenav('left').close();
+  };
+
+}).controller('AppCtrl', ['$scope', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog){
  
     $scope.showAdd = function(ev) {
       $mdDialog.show({
