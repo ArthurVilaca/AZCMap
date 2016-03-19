@@ -14,7 +14,7 @@
 
 
         <section >
-            <div ng-controller="AppCtrl as AppCtrl" id="main-box">
+            <div ng-controller="AddMarkerCtrl as AppCtrl" id="main-box">
                 <md-toolbar style="position: absolute; z-index: 50; background-color: rgb(255, 82, 82);">
                   <div class="md-toolbar-tools">
                     <md-button class="md-icon-button" ng-click="toggleLeft();" aria-label="Settings">
@@ -40,7 +40,7 @@
                   <md-toolbar class="md-theme-indigo">
                     <h1 class="md-toolbar-tools">Estatisticas</h1>
                   </md-toolbar>
-                  <md-content layout-padding ng-controller="LeftCtrl">
+                  <md-content layout-padding ng-controller="StatisticsCtrl as SCtrl">
                     <md-button ng-click="close()" class="md-primary">
                       Fechar
                     </md-button>
@@ -50,7 +50,10 @@
                     <ng-md-icon icon="add"></ng-md-icon>
                     <i class="fa fa-plus"></i>
                 </md-button>
-                <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'></ui-gmap-google-map>
+                <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'>
+                    <ui-gmap-marker ng-repeat="marker in markers" coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
+                    </ui-gmap-marker>
+                </ui-gmap-google-map>
             </div>
         </section>
 

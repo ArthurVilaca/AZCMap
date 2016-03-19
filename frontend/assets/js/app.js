@@ -26,57 +26,68 @@
       $mdSidenav('left').toggle();
     };
 
-}]).controller('LeftCtrl', function($scope, $mdSidenav) {
+    $scope.markers = [];
+    socket.on('Markers', function(data) {
+      console.log(data);
+      $scope.markers = data;
+    });
+
+}]).controller('StatisticsCtrl', function($scope, $mdSidenav) {
   
   $scope.close = function() {
     $mdSidenav('left').close();
   };
 
-}).controller('AppCtrl', ['$scope', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog){
+}).controller('AddMarkerCtrl', ['$scope', '$window', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $window, $mdBottomSheet, $mdSidenav, $mdDialog){
  
-    $scope.radioData = [
-      { label: '1', value: 1 },
-      { label: '2', value: 2 },
-      { label: '3', value: '3', isDisabled: true },
-      { label: '4', value: '4' }
-    ];
-
     $scope.showAdd = function(ev) {
       $mdDialog.show({
         controller: DialogController,
-        template: '<md-dialog aria-label="Mango (Fruit)" class="md-padding"><md-content> <form name="userForm"> '+
+        template: '<md-dialog aria-label="Mango (Fruit)" class="md-padding bidi" ng-cloak><md-content> <form name="userForm"> '+
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" placeholder="Seu nome..."> </md-input-container> </div> '+
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.adress" placeholder="Endereço..."> </md-input-container> </div> '+
         '<md-input-container flex> <label>Comentarios..</label> <textarea ng-model="user.comments" md-maxlength="150"></textarea> </md-input-container> </form> </md-content> '+
         // '<ui-gmap-google-map></ui-gmap-google-map>'+
-        '<md-radio-group ng-model="data.group1">'+
-        '<md-radio-button value="Apple" class="md-primary">Foco do mosquito</md-radio-button>'+
-        '<md-radio-button value="Banana">Caso de Zica</md-radio-button>'+
-        '<md-radio-button value="Mango">Caso de Dengue</md-radio-button>'+
+        '<md-radio-group>'+
+        '<md-radio-button ng-repeat="case in cases" value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
         '</md-radio-group>'+
         '<div class="md-actions" layout="row"> <span flex></span> '+
-        '<md-button ng-click="answer(\'not useful\')"> Cancel </md-button> '+
-        '<md-button ng-click="answer(\'useful\')" class="md-primary"> Save </md-button> </div></md-dialog>',
+        '<md-button ng-click="hide();"> Cancelar </md-button> '+
+        '<md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </div></md-dialog>',
         targetEvent: ev,
-      })
-      .then(function(answer) {
-        $scope.alert = 'You said the information was "' + answer + '".';
-      }, function() {
-        $scope.alert = 'You cancelled the dialog.';
       });
     };
+
   }]);
 
-  function DialogController($scope, $mdDialog) {
+  function DialogController($scope, $mdDialog, $window) {
+    var socket = $window.io();
+
     $scope.hide = function() {
       $mdDialog.hide();
     };
     $scope.cancel = function() {
       $mdDialog.cancel();
     };
-    $scope.answer = function(answer) {
-      $mdDialog.hide(answer);
+
+    $scope.newMarker = function () {
+      console.log("sending new marker to server");
+      $scope.hide();
+      socket.emit('new Marker', { id: "teste"});
     };
+
+    $scope.cases = [{
+      type: "Foco do mosquisto",
+      id: 1
+    },{
+      type: "Caso de zica",
+      id: 2
+    },{
+      type: "Caso de Dengue",
+      id: 3
+    }];
+
+    $scope.type = undefined;
   };
 
   app.config(function($mdThemingProvider) {
