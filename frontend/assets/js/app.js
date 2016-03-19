@@ -47,10 +47,12 @@
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" placeholder="Seu nome..."> </md-input-container> </div> '+
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.adress" placeholder="Endereço..."> </md-input-container> </div> '+
         '<md-input-container flex> <label>Comentarios..</label> <textarea ng-model="user.comments" md-maxlength="150"></textarea> </md-input-container> </form> </md-content> '+
-        // '<ui-gmap-google-map></ui-gmap-google-map>'+
+        '<div layout layout-sm="column">'+
         '<md-radio-group>'+
         '<md-radio-button ng-repeat="case in cases" value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
         '</md-radio-group>'+
+        '<ui-gmap-google-map center="map.center" options="options" zoom="map.zoom"></ui-gmap-google-map>'+
+        '</div>'+
         '<div class="md-actions" layout="row"> <span flex></span> '+
         '<md-button ng-click="hide();"> Cancelar </md-button> '+
         '<md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </div></md-dialog>',
@@ -88,6 +90,16 @@
     }];
 
     $scope.type = undefined;
+
+    this.options = {
+      streetViewControl: false,
+      mapTypeControlOptions: {
+        position: 10
+      },
+        zoomControl: false
+    };
+    
+    $scope.map = { center: { latitude: -19.9304862, longitude: -43.9450135 }, zoom: 13 };
   };
 
   app.config(function($mdThemingProvider) {
