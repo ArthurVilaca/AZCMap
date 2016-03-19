@@ -91,14 +91,14 @@
   };
 
   app.config(function($mdThemingProvider) {
-    var customBlueMap =     $mdThemingProvider.extendPalette('light-blue', {
+    var customBlueMap =     $mdThemingProvider.extendPalette('red', {
       'contrastDefaultColor': 'light',
       'contrastDarkColors': ['50'],
       '50': 'ffffff'
     });
-    $mdThemingProvider.definePalette('customBlue', customBlueMap);
+    $mdThemingProvider.definePalette('neonRed', customBlueMap);
     $mdThemingProvider.theme('default')
-      .primaryPalette('customBlue', {
+      .primaryPalette('neonRed', {
         'default': '500',
         'hue-1': '50'
       })

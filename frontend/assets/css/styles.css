@@ -5,11 +5,32 @@ html, body {
 	font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+#logo {
+	width: 50px;
+	display: inline-flex;
+}
+
+@media screen and (max-width: 480px) {
+    #logoTitle {
+			display: none;
+		}
+		#logo {
+			left: 50px;
+		}
+}
+
+#logoTitle {
+	font-family: LeviReBrushed;
+	font-size: 1.4em;
+	padding: 13px;
+}
+
+
 #main-box {
-position: absolute;
-height: 100%;
-width: 100%;
-z-index: 0;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	z-index: 0;
 }
 
 .angular-google-map-container { 
