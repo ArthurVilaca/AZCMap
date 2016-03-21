@@ -100,7 +100,7 @@
     };
     
     $scope.map = { center: { latitude: -19.9304862, longitude: -43.9450135 }, zoom: 13 };
-  };
+  }
 
   app.config(function($mdThemingProvider) {
     var customBlueMap =     $mdThemingProvider.extendPalette('red', {
@@ -116,7 +116,7 @@
       })
       .accentPalette('red');
     $mdThemingProvider.theme('input', 'default')
-          .primaryPalette('grey')
+          .primaryPalette('grey');
   });
   
 })();

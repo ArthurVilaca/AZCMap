@@ -1,8 +1,9 @@
 'use strict';
 
 var Marker = require('./marker.model');
+var requestPromise = require('request-promise');
 
-//Use this to logic validation errors
+//Use this for logic validation errors
 function validationError(res, statusCode) {
   statusCode = statusCode || 422;
   return function (err) {
@@ -29,25 +30,60 @@ function respondWith(res, statusCode) {
  * Creates a new Marker
  */
 exports.create = function (req, res, next) {
-  //AN EXAMPLE OF HOW IT COULD BE
   var data = req.body;
-  var newMarker = new Marker(data);
-  newMarker.save().then(() => {
-    res.json({ data: newMarker });
+  var marker = new Marker(data);
+  marker.creatorIp = req.clientIp;
+
+  create(marker, data).then(() => {
+    res.json({ data: marker.public });
   }).catch(validationError(res));
 };
 
+function create(marker, data) {
+  return new Promise((resolve, reject) => {
+    if (!data.location) {
+      var options = {
+        uri: 'http://freegeoip.net/json/' + marker.creatorIp,
+        json: true
+      };
+      requestPromise(options)
+        .then((userLocation) => {
+          console.log(userLocation);
+          if (userLocation.longitude !== 0 && userLocation.latitude !== 0) {
+            marker.creatorLocation = {
+              type: 'Point',
+              coordinates: [userLocation.longitude, userLocation.latitude]
+            };
+          }
+          
+          resolve(marker.save())
+        })
+        .catch((err) => {
+          console.log(err);
+          //Will ignore that could not get the user location and save anyway
+          resolve(marker.save());
+        });
+    } else {
+      resolve(marker.save());
+    }
+  });
+}
 
 /**
  * Get all Markers
  */
 exports.all = function (req, res, next) {
-  //Marker.find...
+  //TODO: find according to the parameters
+  Marker.find()
+    .then((markers) => {
+      res.json({ data: markers.public });
+    })
+    .catch(handleError(res));
 };
 
 /**
  * Deletes a Marker
  */
 exports.destroy = function (req, res) {
-
+  handleError(res, 403)(new Error('Delete function not yet available.'));
 };

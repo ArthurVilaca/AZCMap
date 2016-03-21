@@ -25,7 +25,6 @@ for (var e in events) {
 
 function emitEvent(event) {
   return function(doc) {
-    console.log(doc);
     MarkerEvents.emit(event, doc);
   }
 }
