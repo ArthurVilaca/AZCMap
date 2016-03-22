@@ -3,10 +3,30 @@
 var mongoose = require('mongoose');
 var Schema =  mongoose.Schema;
 
-//JUST AN EXAMPLE OF HOW IT COULD BE
 var MarkerSchema = new Schema({
-  name: { type: String, unique: false},
-  
+  name: String,
+  description: String,
+  location: {
+    type: { type: String },
+    coordinates: Array
+  },
+  address: { // Address information to avoid additional queries
+    street: String,
+    number: Number,
+    zipCode: String,
+    neighbourhood: String,
+    city: String,
+    state: String,
+    country: String
+  },
+  type: { type: String, default: 'water' },
+  pictureUrl: String,
+  creationDate: { type: Date },
+  creatorIp: String,
+  creatorLocation: {
+    type: { type: String },
+    coordinates: Array 
+  }
 });
 
 /**
@@ -18,7 +38,13 @@ MarkerSchema
   .virtual('public')
   .get(function() {
     return {
-      'name': this.name,
+      _id: this._id,
+      name: this.name,
+      description: this.description,
+      location: this.location,
+      type: this.type,
+      pictureUrl: this.pictureUrl,
+      creationDate: this.creationDate
     };
   });
 

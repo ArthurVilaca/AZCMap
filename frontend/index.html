@@ -5,27 +5,69 @@
         <meta charset="utf-8">
         <meta name="viewport" content="initial-scale=1.0">
         <link rel="stylesheet" href="assets/css/styles.css"></link>
-    <script src="bower_components/socket.io-client/socket.io.js"></script>
+        <script src="bower_components/socket.io-client/socket.io.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+        <link href="http://db.onlinewebfonts.com/c/737bf92a1c2df108cc14f74f8c8d3b6d?family=LeviReBrushed" rel="stylesheet" type="text/css"/>
+
     </head>
-    <body >
-    <header><h1>AZC MAP</h1></header>
-        <section id="main-box">
-            <div ng-controller="MapCtrl as MapCtrl" id="main-map">
-            <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'></ui-gmap-google-map>
+    <body ng-controller="MapCtrl as MapCtrl">
 
-            <script src="bower_components/angular/angular.min.js"></script>
-
-            <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
-
-            <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
-
-            <script src="bower_components/lodash/dist/lodash.min.js"></script>
-
-            <script src="assets/js/app.js"></script>
-        </div>
-        <div id="main-sidebar">
-            <a href="">Testando 1 2 3</a>
-        </div>
+        <section >
+            <div ng-controller="AddMarkerCtrl as AppCtrl" id="main-box">
+                <md-toolbar style="position: absolute; z-index: 50; background-color: rgb(255, 82, 82);">
+                  <div class="md-toolbar-tools">
+                    <md-button class="md-icon-button" ng-click="toggleLeft();" aria-label="Settings">
+                      <i class="fa fa-bars"></i>
+                    </md-button>
+                        <span flex></span><img src="assets/img/logo.png" alt="Minha Figura" id="logo"> 
+                    <h2 id="logoTitle">AZC Map</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="Favorite">
+                      <i class="fa fa-heart"></i>
+                    </md-button>
+                    <md-button class="md-icon-button" aria-label="More">
+                      <i class="fa fa-ellipsis-v"></i>
+                    </md-button>
+                  </div>
+                </md-toolbar>
+                <md-sidenav
+                    class="md-sidenav-left"
+                    md-component-id="left"
+                    md-disable-backdrop
+                    md-whiteframe="4">
+                  <md-toolbar class="md-theme-indigo">
+                    <h1 class="md-toolbar-tools">Estatisticas</h1>
+                  </md-toolbar>
+                  <md-content layout-padding ng-controller="StatisticsCtrl as SCtrl">
+                    <md-button ng-click="close()" class="md-primary">
+                      Fechar
+                    </md-button>
+                  </md-component-ident>
+                </md-sidenav>
+                <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)">
+                    <ng-md-icon icon="add"></ng-md-icon>
+                    <i class="fa fa-plus"></i>
+                </md-button>
+                <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'>
+                    <ui-gmap-marker ng-repeat="marker in markers" coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
+                    </ui-gmap-marker>
+                </ui-gmap-google-map>
+            </div>
         </section>
+
+        <script src="bower_components/angular/angular.min.js"></script>
+        <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
+        <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
+        <script src="bower_components/lodash/dist/lodash.min.js"></script>
+        
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+
+        <script src="assets/js/app.js"></script>
+
   </body>
 </html>
