@@ -27,7 +27,7 @@
     };
 
     $scope.markers = [];
-    socket.on('Markers', function(data) {
+    socket.on('marker:all', function(data) {
       console.log(data);
       $scope.markers = data;
     });
@@ -75,6 +75,9 @@
     $scope.newMarker = function () {
       console.log("sending new marker to server");
       $scope.hide();
+      //When possible, change this
+      //There won't be a marker creation via socket, the criation will happen via api request ($http. post(...))
+      //Then, the backend will do the magic and emit the created socket to all clients (if there is no error in the process)
       socket.emit('new Marker', { id: "teste"});
     };
 
