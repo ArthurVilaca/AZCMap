@@ -1,12 +1,13 @@
 'use strict';
 
 class BaseController {
+  
   //Use this for logic validation errors
   validationError(res, statusCode) {
     statusCode = statusCode || 422;
     return function (error) {
       res.status(statusCode).json({ error });
-    }
+    };
   }
 
   //Use this to handle errors (in catches)

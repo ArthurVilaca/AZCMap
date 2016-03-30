@@ -12,5 +12,5 @@ module.exports = {
   },
   
   //Root directory of the app
-  root: path.normalize(__dirname + '../../../../'),
+  root: path.normalize(__dirname + '/../../../'),
 };

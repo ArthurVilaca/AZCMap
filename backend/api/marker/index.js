@@ -6,18 +6,11 @@ var MarkerController = require('./marker.controller');
 var controller = new MarkerController();
 var router = new express.Router();
 
-//This function is needed because express is fucking with the class scope when calling the function
-function callControllerMethod(method) {
-  return function(req, res, next) {
-    controller[method](req, res, next);
-  }
-}
-
 //Delete a marker
-router.delete('/:id', callControllerMethod('destroy'));
+router.delete('/:id', controller.destroy.bind(controller));
 //Get all markers
-router.get('/all', callControllerMethod('all'));
+router.get('/all', controller.all.bind(controller));
 //Create a marker
-router.post('/', callControllerMethod('create'));
+router.post('/', controller.create.bind(controller));
 
 module.exports = router;

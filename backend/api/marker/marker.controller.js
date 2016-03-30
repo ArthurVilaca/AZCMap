@@ -5,7 +5,7 @@ var requestPromise = require('request-promise');
 var BaseController = require('../../interface/baseController');
 
 class MarkerController extends BaseController {
-  
+    
   /**
   * Creates a new Marker
   */
@@ -37,7 +37,7 @@ class MarkerController extends BaseController {
               };
             }
             
-            resolve(marker.save())
+            resolve(marker.save());
           })
           .catch((err) => {
             console.log(err);
@@ -57,7 +57,7 @@ class MarkerController extends BaseController {
     //TODO: find according to query parameters
     Marker.find()
       .then((markers) => {
-        res.json({ data: markers.public });
+        res.json({ data: markers.public || [] });
       })
       .catch(this.handleError(res));
   }
