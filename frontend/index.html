@@ -50,7 +50,7 @@
                     <ng-md-icon icon="add"></ng-md-icon>
                     <i class="fa fa-plus"></i>
                 </md-button>
-                <ui-gmap-google-map center='map.center' options="MapCtrl.options" zoom='map.zoom'>
+                <ui-gmap-google-map center='map.center' control="map.control" options="MapCtrl.options" zoom='map.zoom'>
                     <ui-gmap-marker ng-repeat="marker in markers" coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
                     </ui-gmap-marker>
                 </ui-gmap-google-map>
@@ -66,7 +66,7 @@
         <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
-
+        
         <script src="assets/js/app.js"></script>
 
   </body>
