@@ -30,6 +30,7 @@
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         $rootScope.map.control.refresh({latitude: position.coords.latitude, longitude: position.coords.longitude});
+        $rootScope.creatorLocation = {latitude: position.coords.latitude, longitude: position.coords.longitude};
       });
     }
 
@@ -114,7 +115,10 @@
       options: {
         draggable: true
       },
-      type: {}
+      type: {},
+      creatorLocation: {
+        coordinates: []
+      }
     };
 
     $scope.refreshMap = function () {
@@ -124,6 +128,8 @@
 
     $scope.newMarker = function () {
       if($scope.markerForm.$valid){
+        if($rootScope.creatorLocation != undefined)
+          $scope.marker.creatorLocation.coordinates = [$rootScope.creatorLocation.longitude, $rootScope.creatorLocation.latitude];
         $http.post('/api/marker', $scope.marker);
         $scope.hide();
       }
