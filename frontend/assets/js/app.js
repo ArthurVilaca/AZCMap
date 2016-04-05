@@ -9,7 +9,7 @@
     });
   });
   
-  app.controller("MapCtrl", ['$scope', '$window', '$mdSidenav',  function($scope, $window, $mdSidenav) {
+  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', function($scope, $rootScope, $window, $mdSidenav) {
     this.options = {
       streetViewControl: false,
       mapTypeControlOptions: {
@@ -18,9 +18,22 @@
         zoomControl: false
     };
 
+    $rootScope.map = { 
+      center: { 
+        latitude: -19.9304862, 
+        longitude: -43.9450135 
+      }, 
+      zoom: 13,
+      control: {}
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        $rootScope.map.control.refresh({latitude: position.coords.latitude, longitude: position.coords.longitude});
+      });
+    }
+
     var socket = $window.io();
-    
-    $scope.map = { center: { latitude: -19.9304862, longitude: -43.9450135 }, zoom: 13 };
 
     $scope.toggleLeft = function() {
       $mdSidenav('left').toggle();
@@ -28,8 +41,11 @@
 
     $scope.markers = [];
     socket.on('marker:all', function(data) {
-      console.log(data);
       $scope.markers = data;
+    });
+
+    socket.on('marker:new', function(data) {
+      $scope.markers.push(data);
     });
 
 }]).controller('StatisticsCtrl', function($scope, $mdSidenav) {
@@ -42,27 +58,45 @@
  
     $scope.showAdd = function(ev) {
       $mdDialog.show({
-        controller: DialogController,
-        template: '<md-dialog aria-label="Mango (Fruit)" class="md-padding bidi" ng-cloak><md-content> <form name="userForm"> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" placeholder="Seu nome..."> </md-input-container> </div> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.adress" placeholder="Endereço..."> </md-input-container> </div> '+
-        '<md-input-container flex> <label>Comentarios..</label> <textarea ng-model="user.comments" md-maxlength="150"></textarea> </md-input-container> </form> </md-content> '+
-        '<div layout layout-sm="column">'+
-        '<md-radio-group>'+
-        '<md-radio-button ng-repeat="case in cases" value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
-        '</md-radio-group>'+
-        '<ui-gmap-google-map center="map.center" options="options" zoom="map.zoom"></ui-gmap-google-map>'+
+        controller: 'DialogController',
+        template: '<md-dialog aria-label="Mango (Fruit)" class="md-padding bidi" ng-cloak><md-content> <form name="markerForm"> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.comments" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
+        '<div layout-gt-xs="row" >'+
+        '<md-radio-group ng-model="marker.type" required>'+
+        '<md-radio-button class="type-radio" ng-repeat="case in cases" ng-value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
+        '</md-radio-group></div><div ng-show="refreshMap();" style="height: 400px;">'+
+        '<ui-gmap-google-map class="addMarker" control="map.control" center="map.center" options="options" draggable="true" events="map.events" zoom="map.zoom">'+
+        '<ui-gmap-marker coords="marker.coords" options="marker.options" idKey="1">'+
+        '</ui-gmap-marker>'+
+        '</ui-gmap-google-map>'+
         '</div>'+
-        '<div class="md-actions" layout="row"> <span flex></span> '+
+        '<div layout-gt-xs="row" class="md-actions" layout="row">'+
         '<md-button ng-click="hide();"> Cancelar </md-button> '+
-        '<md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </div></md-dialog>',
-        targetEvent: ev,
+        '<md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </div></form></md-content></md-dialog>',
+        targetEvent: ev
       });
     };
 
-  }]);
+  }]).controller('DialogController', ['$scope', '$window', '$mdBottomSheet','$mdSidenav', '$mdDialog', '$rootScope', function($scope, $window, $mdBottomSheet, $mdSidenav, $mdDialog, $rootScope){
 
-  function DialogController($scope, $mdDialog, $window) {
+    this.options = {
+      streetViewControl: false,
+      mapTypeControlOptions: {
+        position: 10
+      },
+      zoomControl: false
+    };
+
+    $scope.map = { 
+      center: { 
+        latitude: $rootScope.map.center.latitude, 
+        longitude: $rootScope.map.center.longitude 
+      }, 
+      zoom: 12,
+      control: $rootScope.map.control
+    };
+
     var socket = $window.io();
 
     $scope.hide = function() {
@@ -72,38 +106,36 @@
       $mdDialog.cancel();
     };
 
-    $scope.newMarker = function () {
-      console.log("sending new marker to server");
-      $scope.hide();
-      //When possible, change this
-      //There won't be a marker creation via socket, the criation will happen via api request ($http. post(...))
-      //Then, the backend will do the magic and emit the created socket to all clients (if there is no error in the process)
-      socket.emit('new Marker', { id: "teste"});
-    };
-
-    $scope.cases = [{
-      type: "Foco do mosquisto",
-      id: 1
-    },{
-      type: "Caso de zica",
-      id: 2
-    },{
-      type: "Caso de Dengue",
-      id: 3
-    }];
-
-    $scope.type = undefined;
-
-    this.options = {
-      streetViewControl: false,
-      mapTypeControlOptions: {
-        position: 10
+    $scope.marker = {
+      coords: { 
+      latitude: $rootScope.map.center.latitude,
+      longitude: $rootScope.map.center.longitude
       },
-        zoomControl: false
+      options: {
+        draggable: true
+      },
+      type: {}
     };
-    
-    $scope.map = { center: { latitude: -19.9304862, longitude: -43.9450135 }, zoom: 13 };
-  }
+
+    $scope.refreshMap = function () {
+      $scope.map.control.refresh();
+      return true;
+    }
+
+    $scope.newMarker = function () {
+      if($scope.markerForm.$valid){
+        socket.emit('new Marker', { marker: $scope.marker});
+        $scope.hide();
+      }
+    };
+
+    $scope.cases = [
+    { type: "Foco do mosquisto", id: 1 },
+    { type: "Caso de zica", id: 2 },
+    { type: "Caso de Dengue",id: 3 },
+    { type: "Caso de Chicungunha", id: 4 }];
+
+}]);
 
   app.config(function($mdThemingProvider) {
     var customBlueMap =     $mdThemingProvider.extendPalette('red', {

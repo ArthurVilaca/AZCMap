@@ -37,7 +37,13 @@ html, body {
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	z-index: 1;
+}
+
+.addMarker { 
+	position: absolute;
+	display: block;
+    height: 400px;
+    width: 100%;
 }
 
 .toolbardemoBasicUsage md-toolbar md-icon.md-default-theme {
@@ -50,8 +56,14 @@ html, body {
 }
 
 .md-actions {
-	position: absolute;
+	/*position: absolute;*/
+	display: block;
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.type-radio {
+	display: inline-block;
+	margin-right: 20px;
 }
