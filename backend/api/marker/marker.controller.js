@@ -22,7 +22,7 @@ class MarkerController extends BaseController {
   
    _create (marker, data) {
     return new Promise((resolve, reject) => {
-      if (!data.location) {
+      if (!data.creatorLocation) {
         var options = {
           uri: 'http://freegeoip.net/json/' + marker.creatorIp,
           json: true

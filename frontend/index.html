@@ -16,7 +16,7 @@
 
         <section >
             <div ng-controller="AddMarkerCtrl as AppCtrl" id="main-box">
-                <md-toolbar style="position: absolute; z-index: 50; background-color: rgb(255, 82, 82);">
+                <md-toolbar style="position: absolute; z-index: 50; background-color: rgb(41,121,255);">
                   <div class="md-toolbar-tools">
                     <md-button class="md-icon-button" ng-click="toggleLeft();" aria-label="Settings">
                       <i class="fa fa-bars"></i>
@@ -51,7 +51,7 @@
                     <i class="fa fa-plus"></i>
                 </md-button>
                 <ui-gmap-google-map center='map.center' control="map.control" options="MapCtrl.options" zoom='map.zoom'>
-                    <ui-gmap-marker ng-repeat="marker in markers" coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
+                    <ui-gmap-marker ng-repeat="marker in markers" coords="marker.location.coordinates" options="marker.options" events="marker.events" idkey="marker._id">
                     </ui-gmap-marker>
                 </ui-gmap-google-map>
             </div>
