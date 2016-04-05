@@ -41,11 +41,12 @@
 
     $scope.markers = [];
     socket.on('marker:all', function(data) {
-      $scope.markers = data;
+      $scope.markers = data.data;
+      console.log($scope.markers);
     });
 
-    socket.on('marker:new', function(data) {
-      $scope.markers.push(data);
+    socket.on('marker:save', function(data) {
+      $scope.markers.push(data.data);
     });
 
 }]).controller('StatisticsCtrl', function($scope, $mdSidenav) {
@@ -67,7 +68,7 @@
         '<md-radio-button class="type-radio" ng-repeat="case in cases" ng-value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
         '</md-radio-group></div><div ng-show="refreshMap();" style="height: 400px;">'+
         '<ui-gmap-google-map class="addMarker" control="map.control" center="map.center" options="options" draggable="true" events="map.events" zoom="map.zoom">'+
-        '<ui-gmap-marker coords="marker.coords" options="marker.options" idKey="1">'+
+        '<ui-gmap-marker coords="marker.location.coordinates" options="marker.options" idKey="1">'+
         '</ui-gmap-marker>'+
         '</ui-gmap-google-map>'+
         '</div>'+
@@ -78,7 +79,7 @@
       });
     };
 
-  }]).controller('DialogController', ['$scope', '$window', '$mdBottomSheet','$mdSidenav', '$mdDialog', '$rootScope', function($scope, $window, $mdBottomSheet, $mdSidenav, $mdDialog, $rootScope){
+  }]).controller('DialogController', ['$scope', '$mdDialog', '$rootScope', '$http', function($scope, $mdDialog, $rootScope, $http){
 
     this.options = {
       streetViewControl: false,
@@ -97,8 +98,6 @@
       control: $rootScope.map.control
     };
 
-    var socket = $window.io();
-
     $scope.hide = function() {
       $mdDialog.hide();
     };
@@ -107,9 +106,10 @@
     };
 
     $scope.marker = {
-      coords: { 
-      latitude: $rootScope.map.center.latitude,
-      longitude: $rootScope.map.center.longitude
+      location: {
+        coordinates: [ 
+          $rootScope.map.center.longitude,
+          $rootScope.map.center.latitude ]
       },
       options: {
         draggable: true
@@ -124,7 +124,7 @@
 
     $scope.newMarker = function () {
       if($scope.markerForm.$valid){
-        socket.emit('new Marker', { marker: $scope.marker});
+        $http.post('/api/marker', $scope.marker);
         $scope.hide();
       }
     };
@@ -138,7 +138,7 @@
 }]);
 
   app.config(function($mdThemingProvider) {
-    var customBlueMap =     $mdThemingProvider.extendPalette('red', {
+    var customBlueMap =     $mdThemingProvider.extendPalette('blue', {
       'contrastDefaultColor': 'light',
       'contrastDarkColors': ['50'],
       '50': 'ffffff'
@@ -149,7 +149,7 @@
         'default': '500',
         'hue-1': '50'
       })
-      .accentPalette('red');
+      .accentPalette('blue');
     $mdThemingProvider.theme('input', 'default')
           .primaryPalette('grey');
   });
