@@ -44,6 +44,10 @@
       $scope.markers = data;
     });
 
+    socket.on('marker:new', function(data) {
+      $scope.markers.push(data);
+    });
+
 }]).controller('StatisticsCtrl', function($scope, $mdSidenav) {
   
   $scope.close = function() {
@@ -55,21 +59,21 @@
     $scope.showAdd = function(ev) {
       $mdDialog.show({
         controller: 'DialogController',
-        template: '<md-dialog aria-label="Mango (Fruit)" class="md-padding bidi" ng-cloak><md-content> <form name="userForm"> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" md-maxlength="70"placeholder="Seu nome..."> </md-input-container> </div> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.comments" md-maxlength="150" placeholder="Comentarios..."> </md-input-container> </div> </form> </md-content>'+
-        '<div layout ng-show="refreshMap();">'+
-        '<md-radio-group ng-model="marker.type">'+
-        '<md-radio-button ng-repeat="case in cases" ng-value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
-        '</md-radio-group>'+
+        template: '<md-dialog aria-label="Mango (Fruit)" class="md-padding bidi" ng-cloak><md-content> <form name="markerForm"> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.comments" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
+        '<div layout-gt-xs="row" >'+
+        '<md-radio-group ng-model="marker.type" required>'+
+        '<md-radio-button class="type-radio" ng-repeat="case in cases" ng-value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
+        '</md-radio-group></div><div ng-show="refreshMap();" style="height: 400px;">'+
         '<ui-gmap-google-map class="addMarker" control="map.control" center="map.center" options="options" draggable="true" events="map.events" zoom="map.zoom">'+
         '<ui-gmap-marker coords="marker.coords" options="marker.options" idKey="1">'+
         '</ui-gmap-marker>'+
         '</ui-gmap-google-map>'+
         '</div>'+
-        '<div class="md-actions" layout="row"> <span flex></span> '+
+        '<div layout-gt-xs="row" class="md-actions" layout="row">'+
         '<md-button ng-click="hide();"> Cancelar </md-button> '+
-        '<md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </div></md-dialog>',
+        '<md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </div></form></md-content></md-dialog>',
         targetEvent: ev
       });
     };
@@ -119,8 +123,10 @@
     }
 
     $scope.newMarker = function () {
-      socket.emit('new Marker', { marker: $scope.marker});
-      $scope.hide();
+      if($scope.markerForm.$valid){
+        socket.emit('new Marker', { marker: $scope.marker});
+        $scope.hide();
+      }
     };
 
     $scope.cases = [
