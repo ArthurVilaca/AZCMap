@@ -10,10 +10,6 @@ module.exports = function(io) {
         client.on('new user', function (data) {
             console.log(data);
         });
-
-        client.on('new Marker', function(data){
-            console.log(data);
-        });
         
         require('../api/marker/marker.socket').register(client);
         
