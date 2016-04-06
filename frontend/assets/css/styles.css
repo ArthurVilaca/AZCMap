@@ -40,10 +40,16 @@ html, body {
 }
 
 .addMarker { 
-	position: absolute;
+	position: relative;
 	display: block;
-    height: 400px;
-    width: 100%;
+  height: 300px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.new-marker-content {
+  padding-left: 30px;
+  padding-right: 10px;
 }
 
 .toolbardemoBasicUsage md-toolbar md-icon.md-default-theme {
