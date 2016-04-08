@@ -12,7 +12,6 @@
   
   app.run(['$templateCache', function ($templateCache) {
     $templateCache.put('searchbox.tpl.html', '<input id="pac-input" class="pac-controls" type="text" placeholder="Pesquisar">');
-    $templateCache.put('window.tpl.html', '<div ng-controller="DialogController as DialogCtrl" ng-init="DialogCtrl.showPlaceDetails(parameter)">{{place.name}}</div>');
     $templateCache.put('add-marker-dialog.tpl.html', '<md-dialog aria-label="Adicionar caso" ng-cloak><form name="markerForm"> <md-toolbar><div class="md-toolbar-tools"><h2>Adicionar caso</h2><span flex></span><md-button class="md-icon-button" ng-click="hide()"><i style="font-size: 1.5em;" class="fa fa-times" aria-label="Close dialog"></i></md-button></div></md-toolbar> <md-dialog-content class="new-marker-content"> '+
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.comments" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
@@ -106,10 +105,6 @@
 
   }]).controller('DialogController', ['$scope', '$mdDialog', '$rootScope', '$http', 'mapDefaultOptions', '$timeout', function($scope, $mdDialog, $rootScope, $http, mapDefaultOptions, $timeout) {
     var self = this;
-    this.place = {};
-    this.showPlaceDetails = function(param) {
-      thi.place = param;
-    };
     
     this.searchbox = {
       template: 'searchbox.tpl.html',
