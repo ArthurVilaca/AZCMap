@@ -82,7 +82,7 @@ html, body {
 /* Search box styles */
 
 .pac-controls {
-  margin: 5px 0 0 5px;
+  margin: 5px;
   border: 1px solid transparent;
   border-radius: 3px;
   box-sizing: border-box;
@@ -90,10 +90,10 @@ html, body {
   height: 32px !important;
   outline: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  animation: 200ms ease-in;
-  -webkit-transition: width .25s;
-  -moz-transition: width .25s;
-  transition: width .25s;
+  -webkit-transition: width .4s;
+  -moz-transition: width .4s;
+  -o-transition: width .4s;
+  transition: width .4s;
 
 }
 
@@ -108,9 +108,15 @@ html, body {
 }
 
 #pac-input:focus {
-  margin: 5px 0 0 5px;
+  margin: 5px 1%;
   border-color: #4d90fe;
   padding-left: 14px;  /* Regular padding-left + 1. */
+  width: 98%;
+}
+
+#pac-input.has-value {
+  margin: 5px 1%;
+  padding-left: 14px;
   width: 98%;
 }
 

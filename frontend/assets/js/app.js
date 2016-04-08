@@ -11,7 +11,7 @@
   });
   
   app.run(['$templateCache', function ($templateCache) {
-    $templateCache.put('searchbox.tpl.html', '<input id="pac-input" class="pac-controls" type="text" placeholder="Pesquisar">');
+    $templateCache.put('searchbox.tpl.html', '<input ng-model="searchCriteria" ng-class="{ true: \'has-value\' }[searchCriteria && searchCriteria.length > 0]" id="pac-input" class="pac-controls" type="text" placeholder="Pesquisar">');
     $templateCache.put('add-marker-dialog.tpl.html', '<md-dialog aria-label="Adicionar caso" ng-cloak><form name="markerForm"> <md-toolbar><div class="md-toolbar-tools"><h2>Adicionar caso</h2><span flex></span><md-button class="md-icon-button" ng-click="hide()"><i style="font-size: 1.5em;" class="fa fa-times" aria-label="Close dialog"></i></md-button></div></md-toolbar> <md-dialog-content class="new-marker-content"> '+
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.comments" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
@@ -119,7 +119,7 @@
               ];
               
               self.centerMap(places[i].geometry.location.lat(),places[i].geometry.location.lng());
-            }
+            }            
         }
       }
     };
