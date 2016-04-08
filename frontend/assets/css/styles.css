@@ -1,3 +1,8 @@
+/**
+* Remove google logo from the map
+*/
+a[href^="https://maps.google.com/maps"]{display:none !important}
+
 html, body {
 	height: 100%;
 	margin: 0;
@@ -72,4 +77,55 @@ html, body {
 .type-radio {
 	display: inline-block;
 	margin-right: 20px;
+}
+
+/* Search box styles */
+
+.pac-controls {
+  margin: 5px 0 0 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 32px !important;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  animation: 200ms ease-in;
+  -webkit-transition: width .25s;
+  -moz-transition: width .25s;
+  transition: width .25s;
+
+}
+
+#pac-input {
+  background-color: #fff;
+  padding: 0 11px 0 13px;
+  width: 100px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  text-overflow: ellipsis;
+}
+
+#pac-input:focus {
+  margin: 5px 0 0 5px;
+  border-color: #4d90fe;
+  padding-left: 14px;  /* Regular padding-left + 1. */
+  width: 98%;
+}
+
+#type-selector {
+  color: #fff;
+  background-color: #4d90fe;
+  padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.pac-container.pac-logo:after {
+  display: none;
 }

@@ -5,18 +5,46 @@
   //Config the angular google maps to use our key
   app.config(function(uiGmapGoogleMapApiProvider) {
     uiGmapGoogleMapApiProvider.configure({
-        key: 'AIzaSyBHdrTrrlUvUOMsU7SdCvZgKEUvutZL4HQ'
+        key: 'AIzaSyBHdrTrrlUvUOMsU7SdCvZgKEUvutZL4HQ',
+        libraries: 'places'
     });
   });
   
-  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', function($scope, $rootScope, $window, $mdSidenav) {
-    this.options = {
-      streetViewControl: false,
-      mapTypeControlOptions: {
-        position: 10
-      },
-        zoomControl: false
+  app.run(['$templateCache', function ($templateCache) {
+    $templateCache.put('searchbox.tpl.html', '<input id="pac-input" class="pac-controls" type="text" placeholder="Pesquisar">');
+    $templateCache.put('add-marker-dialog.tpl.html', '<md-dialog aria-label="Adicionar caso" ng-cloak><form name="markerForm"> <md-toolbar><div class="md-toolbar-tools"><h2>Adicionar caso</h2><span flex></span><md-button class="md-icon-button" ng-click="hide()"><i style="font-size: 1.5em;" class="fa fa-times" aria-label="Close dialog"></i></md-button></div></md-toolbar> <md-dialog-content class="new-marker-content"> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.comments" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
+        '<div layout-gt-xs="row" >'+
+        '<md-radio-group ng-model="marker.type" required>'+
+        '<label style="display: block;">Tipo</label>' +
+        '<md-radio-button class="type-radio" ng-repeat="case in cases" ng-value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
+        '</md-radio-group></div><div >'+
+        '<label style="display: block;">Localização</label>' +
+        '<ui-gmap-google-map events="DialogCtrl.mapEvents" class="addMarker" control="map.control" center="map.center" options="DialogCtrl.options" draggable="true" events="map.events" zoom="map.zoom">'+
+        '<ui-gmap-search-box template="DialogCtrl.searchbox.template"  options="DialogCtrl.searchbox.options" events="DialogCtrl.searchbox.events" position="DialogCtrl.searchbox.position"></ui-gmap-search-box>' +
+        '<ui-gmap-marker coords="marker.location.coordinates" options="marker.options" idKey="1">'+
+        '</ui-gmap-marker>'+
+        '</ui-gmap-google-map>'+
+        '</div>'+
+        '</md-dialog-content>' +
+        '<md-dialog-actions layout="row"> <md-button ng-click="hide();"> Cancelar </md-button> <md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </md-dialog-actions>' +
+        '</form></md-dialog>');
+  }]);
+  
+  app.factory('mapDefaultOptions', function mapDefaultOptionsFactory() {
+    var leftOptions = {
+      position: 10
     };
+    return {
+      streetViewControlOptions: leftOptions,
+      mapTypeControlOptions: leftOptions,
+      zoomControlOptions: leftOptions
+    };
+  });
+  
+  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions) {
+    this.options = mapDefaultOptions;
 
     $rootScope.map = { 
       center: { 
@@ -46,7 +74,6 @@
     $scope.markers = [];
     socket.on('marker:all', function(data) {
       $scope.markers = data.data;
-      console.log($scope.markers);
     });
 
     socket.on('marker:save', function(data) {
@@ -63,24 +90,8 @@
     var fullScreenDialog = $mdMedia('xs') || $mdMedia('sm');
     $scope.showAdd = function(ev) {
       $mdDialog.show({
-        controller: 'DialogController',
-        template: '<md-dialog aria-label="Adicionar caso" ng-cloak><form name="markerForm"> <md-toolbar><div class="md-toolbar-tools"><h2>Adicionar caso</h2><span flex></span><md-button class="md-icon-button" ng-click="hide()"><i style="font-size: 1.5em;" class="fa fa-times" aria-label="Close dialog"></i></md-button></div></md-toolbar> <md-dialog-content class="new-marker-content"> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.comments" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
-        '<div layout-gt-xs="row" >'+
-        '<md-radio-group ng-model="marker.type" required>'+
-        '<label style="display: block;">Tipo</label>' +
-        '<md-radio-button class="type-radio" ng-repeat="case in cases" ng-value="case.id" aria-label="{{case.type}}">{{case.type}}</md-radio-button>'+
-        '</md-radio-group></div><div ng-show="refreshMap();" >'+
-        '<label style="display: block;">Localização</label>' +
-        '<ui-gmap-google-map class="addMarker" control="map.control" center="map.center" options="options" draggable="true" events="map.events" zoom="map.zoom">'+
-        '<ui-gmap-marker coords="marker.location.coordinates" options="marker.options" idKey="1">'+
-        '</ui-gmap-marker>'+
-        '</ui-gmap-google-map>'+
-        '</div>'+
-        '</md-dialog-content>' +
-        '<md-dialog-actions layout="row"> <md-button ng-click="hide();"> Cancelar </md-button> <md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </md-dialog-actions>' +
-        '</form></md-dialog>',
+        controller: 'DialogController as DialogCtrl',
+        templateUrl: 'add-marker-dialog.tpl.html',
         targetEvent: ev,
         fullscreen: fullScreenDialog
       });
@@ -92,16 +103,51 @@
       fullScreenDialog = (wantsFullScreen === true);
     });
 
-  }]).controller('DialogController', ['$scope', '$mdDialog', '$rootScope', '$http', function($scope, $mdDialog, $rootScope, $http){
-
-    this.options = {
-      streetViewControl: false,
-      mapTypeControlOptions: {
-        position: 10
-      },
-      zoomControl: false
+  }]).controller('DialogController', ['$scope', '$mdDialog', '$rootScope', '$http', 'mapDefaultOptions', '$timeout', function($scope, $mdDialog, $rootScope, $http, mapDefaultOptions, $timeout) {
+    var self = this;
+    
+    this.searchbox = {
+      template: 'searchbox.tpl.html',
+      position: 'top-left',
+      events: {
+        places_changed: function (searchBox) {
+            var places = searchBox.getPlaces();
+            for (var i = 0; i < places.length; i++) {
+              $scope.marker.location.coordinates = [
+                places[i].geometry.location.lng(),
+                places[i].geometry.location.lat()
+              ];
+              
+              self.centerMap(places[i].geometry.location.lat(),places[i].geometry.location.lng());
+            }
+        }
+      }
     };
-
+    
+    this.options = angular.copy(mapDefaultOptions);
+    this.options.streetViewControl = false;
+    var refreshedOnce = false;
+    
+    this.mapEvents = {
+      idle: function (maps, eventName, args) {
+        if (!refreshedOnce) {
+          self.refreshMap();
+          refreshedOnce = true;
+        }
+      }
+    };
+    
+    this.centerMap = function (latitude, longitude) {
+      var lat = latitude || $rootScope.map.center.latitude;
+      var lng = longitude || $rootScope.map.center.longitude;
+      $rootScope.map.control.getGMap().setCenter(new google.maps.LatLng(lat, lng));
+    };
+    
+    this.refreshMap = function () {
+      $scope.map.control.refresh();
+      this.centerMap();
+    };
+    
     $scope.map = { 
       center: { 
         latitude: $rootScope.map.center.latitude, 
@@ -133,14 +179,6 @@
       }
     };
 
-    $scope.refreshMap = function () {
-      $scope.map.control.refresh();
-      var lat = $rootScope.map.center.latitude;
-      var lng = $rootScope.map.center.longitude;
-      $rootScope.map.control.getGMap().setCenter(new google.maps.LatLng(lat, lng));
-      return true;
-    };
-
     $scope.newMarker = function () {
       if($scope.markerForm.$valid){
         if($rootScope.creatorLocation !== undefined)
@@ -155,7 +193,6 @@
     { type: "Caso de zica", id: 2 },
     { type: "Caso de Dengue",id: 3 },
     { type: "Caso de Chicungunha", id: 4 }];
-
 }]);
 
   app.config(function($mdThemingProvider) {
