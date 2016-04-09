@@ -43,8 +43,9 @@
     };
   });
   
-  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions) {
+  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', '$timeout', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, $timeout) {
     this.options = mapDefaultOptions;
+    var self = this;
 
     $rootScope.map = { 
       center: { 
@@ -54,14 +55,25 @@
       zoom: 13,
       control: {}
     };
+    
+    this.refreshAndCenter = function(lat, lng) {
+      $rootScope.map.control.refresh({latitude: lat, longitude: lng});
+      $rootScope.map.control.getGMap().setCenter(new google.maps.LatLng(lat, lng));
+    };
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
-        $rootScope.map.control.refresh({latitude: lat, longitude: lng});
         $rootScope.creatorLocation = {latitude: lat, longitude: lng};
-        $rootScope.map.control.getGMap().setCenter(new google.maps.LatLng(lat, lng));
+        
+        if ($rootScope.map && $rootScope.map.control.refresh) {
+          self.refreshAndCenter(lat, lng);
+        } else {
+          $timeout(function () {
+            self.refreshAndCenter(lat, lng);
+          }, 200);
+        }
       });
     }
 

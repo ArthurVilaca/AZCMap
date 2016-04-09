@@ -49,8 +49,7 @@
           </md-toolbar>
           <md-content layout-padding style="height: 100%;">
             <div ng-show="markers.length > 0" id="timeline" ng-cloak>
-              <!--<div id= "tst"></div>-->
-              <div ng-repeat="marker in markers| orderBy: 'creationDate':true" ng-cloak>
+              <div ng-repeat="marker in markers | orderBy: 'creationDate':true track by marker._id" ng-cloak>
                 <div class="timeline-item">
                   <div class="timeline-icon"> <i class="fa fa-bug"></i> </div>
                   <div class="timeline-content right">
@@ -81,7 +80,7 @@
         </md-button>
       </div>
       <ui-gmap-google-map center='map.center' control="map.control" options="MapCtrl.options" zoom='map.zoom'>
-        <ui-gmap-marker ng-repeat="marker in markers" coords="marker.location.coordinates" options="marker.options" events="marker.events"
+        <ui-gmap-marker ng-repeat="marker in markers track by marker._id" coords="marker.location.coordinates" options="marker.options" events="marker.events"
         idkey="marker._id">
         </ui-gmap-marker>
       </ui-gmap-google-map>
