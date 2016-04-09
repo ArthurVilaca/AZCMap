@@ -1,7 +1,14 @@
 'use strict';
 
 var mongoose = require('mongoose');
+
 var Schema =  mongoose.Schema;
+const markerTypes = {
+  'Focus point': 1,
+  'Zika case': 2,
+  'Dengue case': 3,
+  'Chikungunya case': 4
+};
 
 var MarkerSchema = new Schema({
   userName: String,
@@ -19,7 +26,7 @@ var MarkerSchema = new Schema({
     state: String,
     country: String
   },
-  type: { type: Number, default: 1 }, //1: focus point, 2: Zika case, 3: Dengue case, 4: Chicungunha case
+  type: { type: Number, default: markerTypes['Focus point'] },
   pictureUrl: String,
   creationDate: { type: Date , default: Date.now},
   creatorIp: String,

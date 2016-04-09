@@ -147,8 +147,11 @@
     this.mapEvents = {
       idle: function (maps, eventName, args) {
         if (!refreshedOnce) {
-          self.refreshMap();
-          refreshedOnce = true;
+          if ($scope.map && $scope.map.control && $scope.map.control.refresh) {
+            self.refreshMap();
+            refreshedOnce = true;
+          }
+          
         }
       }
     };
@@ -189,7 +192,7 @@
       options: {
         draggable: true
       },
-      type: {},
+      type: 1,
       creatorLocation: {
         coordinates: []
       }
@@ -221,7 +224,7 @@
     { type: "Foco do mosquisto", id: 1 },
     { type: "Caso de zica", id: 2 },
     { type: "Caso de Dengue", id: 3 },
-    { type: "Caso de Chicungunha", id: 4 }];
+    { type: "Caso de Chikungunya", id: 4 }];
 }]);
 
   app.config(function($mdThemingProvider) {
