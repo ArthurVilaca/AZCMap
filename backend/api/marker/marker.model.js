@@ -19,7 +19,7 @@ var MarkerSchema = new Schema({
     state: String,
     country: String
   },
-  type: { type: String, default: 'water' },
+  type: { type: Number, default: 1 }, //1: focus point, 2: Zika case, 3: Dengue case, 4: Chicungunha case
   pictureUrl: String,
   creationDate: { type: Date , default: Date.now},
   creatorIp: String,

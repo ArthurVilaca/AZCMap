@@ -23,31 +23,45 @@ class MarkerController extends BaseController {
    _create (marker, data) {
     return new Promise((resolve, reject) => {
       if (!data.creatorLocation) {
-        var options = {
-          uri: 'http://freegeoip.net/json/' + marker.creatorIp,
-          json: true
-        };
-        requestPromise(options)
-          .then((userLocation) => {
-            console.log(userLocation);
-            if (userLocation.longitude !== 0 && userLocation.latitude !== 0) {
-              marker.creatorLocation = {
-                type: 'Point',
-                coordinates: [userLocation.longitude, userLocation.latitude]
-              };
-            }
-            
-            resolve(marker.save());
+        this._createCheckingIp(marker, data)
+          .then(savedMarker => {
+            resolve(savedMarker);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
             //Will ignore the fact that we could not get the user location and save the marker anyway
             resolve(marker.save());
           });
       } else {
-        resolve(marker.save());
+        marker.save()
+          .then(savedMarker => {
+            resolve(savedMarker);
+          })
+          .catch(err => {
+            reject(err);
+          });
       }
     });
+  }
+  
+  _createCheckingIp (marker, data) {
+    var options = {
+      uri: 'http://freegeoip.net/json/' + marker.creatorIp,
+      json: true
+    };
+    
+    return requestPromise(options)
+      .then(userLocation => {
+        console.log(userLocation);
+        if (userLocation.longitude !== 0 && userLocation.latitude !== 0) {
+          marker.creatorLocation = {
+            type: 'Point',
+            coordinates: [userLocation.longitude, userLocation.latitude]
+          };
+        }
+        
+        return marker.save();
+      });
   }
   
   /**

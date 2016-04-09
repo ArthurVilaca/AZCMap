@@ -172,3 +172,11 @@ html, body {
 {
 	background-color: #EE5555;
 }
+
+md-toast.error .md-toast-content {
+    background-color: rgba(251, 0, 0, 0.66);
+}
+
+md-toast.success .md-toast-content {
+    background-color: rgba(10, 156, 10, 0.88);
+}

@@ -119,7 +119,7 @@
       fullScreenDialog = (wantsFullScreen === true);
     });
 
-  }]).controller('DialogController', ['$scope', '$mdDialog', '$rootScope', '$http', 'mapDefaultOptions', '$timeout', function($scope, $mdDialog, $rootScope, $http, mapDefaultOptions, $timeout) {
+  }]).controller('DialogController', ['$scope', '$mdDialog', '$rootScope', '$http', 'mapDefaultOptions', '$timeout', '$mdToast', function($scope, $mdDialog, $rootScope, $http, mapDefaultOptions, $timeout, $mdToast) {
     var self = this;
     
     this.searchbox = {
@@ -199,15 +199,28 @@
       if($scope.markerForm.$valid){
         if($rootScope.creatorLocation !== undefined)
           $scope.marker.creatorLocation.coordinates = [$rootScope.creatorLocation.longitude, $rootScope.creatorLocation.latitude];
-        $http.post('/api/marker', $scope.marker);
-        $scope.hide();
+        $http.post('/api/marker', $scope.marker)
+          .then(function (response) {
+            showToast('top right', 'Caso salvo com sucesso!', 'success', 1500);
+            $scope.hide();
+          }, function (response) {
+            showToast('top right', response.data.error.message, 'error', 1500);
+          });
       }
     };
+    
+    function showToast(position, message, toastClass, hideDelay) {
+      $mdToast.show({
+        template: '<md-toast class="' + toastClass + '">' + message + '</md-toast>',
+        position: position,
+        hideDelay: hideDelay || 1500
+      });
+    }
 
     $scope.cases = [
     { type: "Foco do mosquisto", id: 1 },
     { type: "Caso de zica", id: 2 },
-    { type: "Caso de Dengue",id: 3 },
+    { type: "Caso de Dengue", id: 3 },
     { type: "Caso de Chicungunha", id: 4 }];
 }]);
 
