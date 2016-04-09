@@ -12,9 +12,9 @@
   
   app.run(['$templateCache', function ($templateCache) {
     $templateCache.put('searchbox.tpl.html', '<input ng-model="searchCriteria" ng-class="{ true: \'has-value\' }[searchCriteria && searchCriteria.length > 0]" id="pac-input" class="pac-controls" type="text" placeholder="Pesquisar">');
-    $templateCache.put('add-marker-dialog.tpl.html', '<md-dialog aria-label="Adicionar caso" ng-cloak><form name="markerForm"> <md-toolbar><div class="md-toolbar-tools"><h2>Adicionar caso</h2><span flex></span><md-button class="md-icon-button" ng-click="hide()"><i style="font-size: 1.5em;" class="fa fa-times" aria-label="Close dialog"></i></md-button></div></md-toolbar> <md-dialog-content class="new-marker-content"> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.name" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="user.comments" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
+    $templateCache.put('add-marker-dialog.tpl.html', '<md-dialog ng-controller="DialogController" aria-label="Adicionar caso" ng-cloak><form name="markerForm"> <md-toolbar><div class="md-toolbar-tools"><h2>Adicionar caso</h2><span flex></span><md-button class="md-icon-button" ng-click="hide()"><i style="font-size: 1.5em;" class="fa fa-times" aria-label="Close dialog"></i></md-button></div></md-toolbar> <md-dialog-content class="new-marker-content"> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="marker.userName" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="marker.description" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
         '<div layout-gt-xs="row" >'+
         '<md-radio-group ng-model="marker.type" required>'+
         '<label style="display: block;">Tipo</label>' +
@@ -34,7 +34,7 @@
   
   app.factory('mapDefaultOptions', function mapDefaultOptionsFactory() {
     var leftOptions = {
-      position: 10
+      position: typeof google !== 'undefined'? google.maps.ControlPosition.BOTTOM_LEFT : 10
     };
     return {
       streetViewControlOptions: leftOptions,
@@ -80,13 +80,17 @@
       $scope.markers.push(data.data);
     });
 
-}]).controller('StatisticsCtrl', function($scope, $mdSidenav) {
+}]).controller('StatisticsCtrl', ['$scope', '$mdSidenav', '$mdMedia', function($scope, $mdSidenav, $mdMedia) {
   
   $scope.close = function() {
     $mdSidenav('left').close();
   };
+  
+  $scope.showCloseButton = function() {
+    return !$mdMedia('gt-md');
+  };
 
-}).controller('AddMarkerCtrl', ['$scope', '$window', '$mdMedia', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $window, $mdMedia, $mdBottomSheet, $mdSidenav, $mdDialog){
+}]).controller('AddMarkerCtrl', ['$scope', '$window', '$mdMedia', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $window, $mdMedia, $mdBottomSheet, $mdSidenav, $mdDialog){
     var fullScreenDialog = $mdMedia('xs') || $mdMedia('sm');
     $scope.showAdd = function(ev) {
       $mdDialog.show({

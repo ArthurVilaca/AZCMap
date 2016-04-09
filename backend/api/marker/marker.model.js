@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema =  mongoose.Schema;
 
 var MarkerSchema = new Schema({
-  name: String,
+  userName: String,
   description: String,
   location: {
     type: { type: String },
@@ -21,7 +21,7 @@ var MarkerSchema = new Schema({
   },
   type: { type: String, default: 'water' },
   pictureUrl: String,
-  creationDate: { type: Date },
+  creationDate: { type: Date , default: Date.now},
   creatorIp: String,
   creatorLocation: {
     type: { type: String },
@@ -39,7 +39,7 @@ MarkerSchema
   .get(function() {
     return {
       _id: this._id,
-      name: this.name,
+      userName: this.userName,
       description: this.description,
       location: this.location,
       type: this.type,
