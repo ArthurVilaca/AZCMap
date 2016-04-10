@@ -85,14 +85,18 @@
 
     $scope.markers = [];
     socket.on('marker:all', function(data) {
-      $scope.markers = data.data;
+      $scope.$apply(function pushMarker() {
+        $scope.markers = data.data;
+      });
     });
-
+    
     socket.on('marker:save', function(data) {
-      $scope.markers.push(data.data);
+      $scope.$apply(function pushMarker() {
+        $scope.markers.push(data.data);
+      });
     });
 
-}]).controller('StatisticsCtrl', ['$scope', '$mdSidenav', '$mdMedia', function($scope, $mdSidenav, $mdMedia) {
+}]).controller('StatisticsCtrl', ['$scope', '$mdSidenav', '$mdMedia', '$window', function($scope, $mdSidenav, $mdMedia, $window) {
   
   $scope.close = function() {
     $mdSidenav('left').close();
@@ -151,7 +155,6 @@
             self.refreshMap();
             refreshedOnce = true;
           }
-          
         }
       }
     };

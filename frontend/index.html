@@ -10,7 +10,7 @@
   <script src="bower_components/socket.io-client/socket.io.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css">
   <link href="http://db.onlinewebfonts.com/c/737bf92a1c2df108cc14f74f8c8d3b6d?family=LeviReBrushed" rel="stylesheet" type="text/css"
   />
 
@@ -37,7 +37,7 @@
 
         </div>
       </md-toolbar>
-      <div ng-controller="StatisticsCtrl">
+      <div ng-controller="StatisticsCtrl as StatsCtrl">
         <md-sidenav class="md-sidenav-left" id="sidenav-statistics" md-is-locked-open="$mdMedia('gt-md')" md-component-id="left"
         md-disable-backdrop md-whiteframe="4">
           <md-toolbar class="md-theme-indigo" id="toolbar-statistics">
@@ -48,19 +48,19 @@
             </div>
           </md-toolbar>
           <md-content layout-padding style="height: 100%;">
-            <div ng-show="markers.length > 0" id="timeline" ng-cloak>
+            <div vs-repeat id="timeline">
               <div ng-repeat="marker in markers | orderBy: 'creationDate':true track by marker._id" ng-cloak>
                 <div class="timeline-item">
                   <div class="timeline-icon"> <i class="fa fa-bug"></i> </div>
                   <div class="timeline-content right">
-                    <h4>{{ marker.userName }}</h4>
-                    <p> {{ marker.description }}</p>
-                    <p> {{ marker.creationDate|date }}</p>
+                    <h4>{{::marker.userName}}</h4>
+                    <p>{{::marker.description}}</p>
+                    <p>{{::marker.creationDate|date}}</p>
                   </div>
                 </div>
               </div>
             </div>
-            </md-component-ident>
+          </md-content>
         </md-sidenav>
       </div>
       <div ng-controller="AddMarkerCtrl">
@@ -70,8 +70,8 @@
         </md-button>
       </div>
       <ui-gmap-google-map center='map.center' control="map.control" options="MapCtrl.options" zoom='map.zoom'>
-        <ui-gmap-marker ng-repeat="marker in markers track by marker._id" coords="marker.location.coordinates" options="marker.options" events="marker.events"
-        idkey="marker._id">
+        <ui-gmap-marker ng-repeat="marker in markers track by marker._id" coords="::marker.location.coordinates" options="::marker.options" events="::marker.events"
+        idkey="::marker._id">
         </ui-gmap-marker>
       </ui-gmap-google-map>
     </div>
@@ -81,6 +81,7 @@
   <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
   <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
   <script src="bower_components/lodash/dist/lodash.min.js"></script>
+  <script src="assets/js/vs-repeat.js"></script>
 
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
