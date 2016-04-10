@@ -29,11 +29,11 @@ for (var e in events) {
 function emitEvent(event) {
   return function(doc) {
     MarkerEvents.emit(event, doc);
-  }
+  };
 }
 
 MarkerEvents.emitAllMarkers = function (client) {
-  Marker.find()
+  Marker.find().sort({creationDate: -1})
     .then((markers) => {
       client.emit(MARKER_ALL_EVENT, { event: MARKER_ALL_EVENT, data: markers });
     })

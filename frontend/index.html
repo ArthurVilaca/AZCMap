@@ -48,14 +48,14 @@
             </div>
           </md-toolbar>
           <md-content layout-padding style="height: 100%;">
-            <div vs-repeat id="timeline">
-              <div ng-repeat="marker in markers | orderBy: 'creationDate':true track by marker._id" ng-cloak>
+            <div id="timeline" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
+              <div class="repeat-parent" ng-repeat="marker in timelineMarkers | orderBy:'creationDate':true" ng-cloak>
                 <div class="timeline-item">
                   <div class="timeline-icon"> <i class="fa fa-bug"></i> </div>
                   <div class="timeline-content right">
                     <h4>{{::marker.userName}}</h4>
                     <p>{{::marker.description}}</p>
-                    <p>{{::marker.creationDate|date}}</p>
+                    <p>{{marker.creationDate|date}}</p>
                   </div>
                 </div>
               </div>
@@ -69,19 +69,21 @@
           <i class="fa fa-plus"></i>
         </md-button>
       </div>
-      <ui-gmap-google-map center='map.center' control="map.control" options="MapCtrl.options" zoom='map.zoom'>
-        <ui-gmap-marker ng-repeat="marker in markers track by marker._id" coords="::marker.location.coordinates" options="::marker.options" events="::marker.events"
-        idkey="::marker._id">
+      <ui-gmap-google-map center="map.center"" events="MapCtrl.mapEvents" control="map.control" options="MapCtrl.options" zoom="map.zoom">
+        <!--Markers are now added dinamically. Only markers that fit the map bounds are shown-->
+        <!--<ui-gmap-marker ng-repeat="marker in markers track by marker._id" coords="::marker.location.coordinates" options="::marker.options" events="::marker.events"
+        idkey="::marker._id">-->
         </ui-gmap-marker>
       </ui-gmap-google-map>
     </div>
   </section>
 
   <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js"></script>
   <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
   <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
   <script src="bower_components/lodash/dist/lodash.min.js"></script>
-  <script src="assets/js/vs-repeat.js"></script>
+  <script src="assets/js/vendor/vs-repeat.js"></script>
 
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>

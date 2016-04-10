@@ -1,6 +1,7 @@
 {
   "name": "zicaMap",
   "dependencies": {
-    "angular": "~1.4"
+    "angular": "~1.4",
+    "ngInfiniteScroll": "~1.2.2"
   }
 }

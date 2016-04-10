@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  var app = angular.module('zicaMap', ['uiGmapgoogle-maps', 'ngMaterial']);
+  var app = angular.module('zicaMap', ['uiGmapgoogle-maps', 'ngMaterial', 'infinite-scroll']);
   
   //Config the angular google maps to use our key
   app.config(function(uiGmapGoogleMapApiProvider) {
@@ -32,6 +32,25 @@
         '</form></md-dialog>');
   }]);
   
+  app.filter('orderObjectBy', function() {
+    return function(items, itemsToFilter, field, dateField, reverse) {
+      var filtered = [];
+      itemsToFilter.sort(function (a, b) {
+        return ((dateField? (new Date(a[field]) > new Date(b[field])) : a[field] > b[field]) ? 1 : -1);
+      });
+      if(reverse) itemsToFilter.reverse();
+      
+      for (var i = 0; i < itemsToFilter.length; i++) {
+        if (items[itemsToFilter[i]._id]) {
+          filtered.push(itemsToFilter[i]);
+        }
+      }
+      
+      return filtered;
+    };
+  });
+
+  
   app.factory('mapDefaultOptions', function mapDefaultOptionsFactory() {
     var leftOptions = {
       position: typeof google !== 'undefined'? google.maps.ControlPosition.BOTTOM_LEFT : 10
@@ -43,9 +62,78 @@
     };
   });
   
-  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', '$timeout', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, $timeout) {
+  function MarkerDrawer(uiGmapIsReady) {
+    var self = this;
+    this.mapMarkers = [];
+    
+    uiGmapIsReady.promise(1).then(function(instances) {
+      if (instances && instances.length > 0) {
+        var instance = instances[0];
+        
+        self.map = instance.map;
+      }
+    });
+    
+    this._addMarker = function (marker, visible) {
+      var markerToAdd = new google.maps.Marker({
+        position: {lat: marker.location.coordinates[1], lng: marker.location.coordinates[0]},
+        map: visible? self.map : null
+      });
+      markerToAdd._id = marker._id;
+      self.mapMarkers.push(markerToAdd);
+    };
+    
+    this.addMarker = function (marker, visible) {
+      if (google) {
+        self._addMarker(marker, visible);
+      } else {
+        uiGmapIsReady.promise(1).then(function(instances) {
+          self._addMarker(marker, visible);
+        });
+      }
+      
+      
+    };
+    
+    this.showMarker = function (marker) {
+      marker.setMap(self.map);
+    };
+    
+    this.hideMarker = function (marker) {
+      marker.setMap(null);
+    };
+    
+    this.updateView = function () {
+      if (self.map) {
+        var bounds = self.map.getBounds();
+        
+        for (var i =0; i < self.mapMarkers.length; i++) {
+          var marker = self.mapMarkers[i];
+          var markerPosition = marker.getPosition();
+          if (bounds.contains(markerPosition) && marker.getMap() === null) {
+            self.showMarker(marker);
+          } else if (!bounds.contains(markerPosition)) {
+            self.hideMarker(marker);
+          }
+        }
+      }
+    };
+  }
+  
+  app.factory('markerDrawer', ['uiGmapIsReady', function (uiGmapIsReady) {
+    return new MarkerDrawer(uiGmapIsReady);
+  }]);
+  
+  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', 'uiGmapIsReady', 'markerDrawer', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, uiGmapIsReady, markerDrawer) {
     this.options = mapDefaultOptions;
     var self = this;
+    $scope.timelineMarkers = [];
+    
+    this.mapEvents = {
+      idle: function (maps, eventName, args) {
+        markerDrawer.updateView();
+      }
+    };
 
     $rootScope.map = { 
       center: { 
@@ -70,9 +158,11 @@
         if ($rootScope.map && $rootScope.map.control.refresh) {
           self.refreshAndCenter(lat, lng);
         } else {
-          $timeout(function () {
-            self.refreshAndCenter(lat, lng);
-          }, 200);
+           uiGmapIsReady.promise(1).then(function(instances) {
+            if (instances && instances.length > 0) {
+              self.refreshAndCenter(lat, lng);
+            }
+          });
         }
       });
     }
@@ -84,18 +174,35 @@
     };
 
     $scope.markers = [];
-    socket.on('marker:all', function(data) {
-      $scope.$apply(function pushMarker() {
-        $scope.markers = data.data;
+    socket.on('marker:all', function(event) {
+      $scope.$apply(function () {
+        $scope.markers = event.data;
+        for (var i = 0; i < $scope.markers.length; i++) {
+          markerDrawer.addMarker($scope.markers[i]);
+          
+          if (i <= 20) {
+            $scope.timelineMarkers.push($scope.markers[i]);
+          }
+        }
+        markerDrawer.updateView();
       });
     });
     
-    socket.on('marker:save', function(data) {
+    socket.on('marker:save', function(event) {
       $scope.$apply(function pushMarker() {
-        $scope.markers.push(data.data);
+        $scope.markers.push(event.data);
+        $scope.timelineMarkers.push(event.data);
+        markerDrawer.addMarker(event.data, true);
       });
     });
-
+    
+    $scope.loadMoreTimelineItems = function () {
+      var numberOfItems = $scope.timelineMarkers.length;
+      for (var i = numberOfItems; (i < (numberOfItems + 9) && i < $scope.markers.length); i++) {
+        $scope.timelineMarkers.push($scope.markers[i]);
+        
+      }
+    };
 }]).controller('StatisticsCtrl', ['$scope', '$mdSidenav', '$mdMedia', '$window', function($scope, $mdSidenav, $mdMedia, $window) {
   
   $scope.close = function() {
