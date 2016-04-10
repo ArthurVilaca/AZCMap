@@ -14,7 +14,7 @@
     $templateCache.put('searchbox.tpl.html', '<input ng-model="searchCriteria" ng-class="{ true: \'has-value\' }[searchCriteria && searchCriteria.length > 0]" id="pac-input" class="pac-controls" type="text" placeholder="Pesquisar">');
     $templateCache.put('add-marker-dialog.tpl.html', '<md-dialog aria-label="Adicionar caso" ng-cloak><form name="markerForm"> <md-toolbar><div class="md-toolbar-tools"><h2>Adicionar caso</h2><span flex></span><md-button class="md-icon-button" ng-click="hide()"><i style="font-size: 1.5em;" class="fa fa-times" aria-label="Close dialog"></i></md-button></div></md-toolbar> <md-dialog-content class="new-marker-content"> '+
         '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="marker.userName" md-maxlength="70"placeholder="Seu nome..." required> </md-input-container> </div> '+
-        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="marker.description" md-maxlength="150" placeholder="Comentarios..." required> </md-input-container> </div> </form> '+
+        '<div layout layout-sm="column"> <md-input-container flex> <input ng-model="marker.description" md-maxlength="150" placeholder="Comentarios..."> </md-input-container> </div> </form> '+
         '<div layout-gt-xs="row" >'+
         '<md-radio-group ng-model="marker.type" required>'+
         '<label style="display: block;">Tipo</label>' +
@@ -62,7 +62,7 @@
     };
   });
   
-  function MarkerDrawer(uiGmapIsReady) {
+  function MarkerDrawer(uiGmapIsReady, $timeout) {
     var self = this;
     this.mapMarkers = [];
     
@@ -87,9 +87,9 @@
       if (google) {
         self._addMarker(marker, visible);
       } else {
-        uiGmapIsReady.promise(1).then(function(instances) {
+        $timeout(function() {
           self._addMarker(marker, visible);
-        });
+        }, 1000);
       }
       
       
@@ -120,8 +120,8 @@
     };
   }
   
-  app.factory('markerDrawer', ['uiGmapIsReady', function (uiGmapIsReady) {
-    return new MarkerDrawer(uiGmapIsReady);
+  app.factory('markerDrawer', ['uiGmapIsReady', '$timeout', function (uiGmapIsReady, $timeout) {
+    return new MarkerDrawer(uiGmapIsReady, $timeout);
   }]);
   
   app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', 'uiGmapIsReady', 'markerDrawer', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, uiGmapIsReady, markerDrawer) {
