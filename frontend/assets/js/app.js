@@ -174,13 +174,14 @@
     };
 
     $scope.markers = [];
+    //TODO: Change to get request
     socket.on('marker:all', function(event) {
       $scope.$apply(function () {
         $scope.markers = event.data;
         for (var i = 0; i < $scope.markers.length; i++) {
           markerDrawer.addMarker($scope.markers[i]);
           
-          if (i <= 20) {
+          if (i <= 20 && $scope.timelineMarkers.length === 0) {
             $scope.timelineMarkers.push($scope.markers[i]);
           }
         }
