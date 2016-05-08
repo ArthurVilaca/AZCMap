@@ -8,7 +8,7 @@ module.exports = {
 
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/azc-map'
+    uri: process.env.DEV_MONGO_URI || 'mongodb://localhost/azc-map'
   },
   
   //Root directory of the app
