@@ -11,5 +11,9 @@
     "request-promise": "^2.0.1",
     "serve-favicon": "^2.3.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "supertest": "^1.2.0"
+  }
 }
