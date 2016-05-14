@@ -71,7 +71,7 @@ class MarkerController extends BaseController {
     //TODO: find according to query parameters
     Marker.find()
       .then((markers) => {
-        res.json({ data: markers});
+        res.json({ data: markers.map(marker => marker.public)});
       })
       .catch(this.handleError(res));
   }
