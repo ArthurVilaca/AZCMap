@@ -1,7 +1,11 @@
 {
   "name": "zicaMap",
   "dependencies": {
-    "angular": "~1.4",
-    "ngInfiniteScroll": "~1.2.2"
+    "angular": "~1.5.5",
+    "ngInfiniteScroll": "~1.2.2",
+    "angular-material": "^1.0.9",
+    "angular-chart.js": "^0.10.2",
+    "angular-google-maps": "^2.3.3",
+    "socket.io-client": "^1.4.6"
   }
 }

@@ -20,6 +20,7 @@
     "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
     "socket.io": "^1.4.6",
-    "supertest": "^1.2.0"
+    "supertest": "^1.2.0",
+    "profanity-util": "https://github.com/wagoid/nodejs-profanity-util.git"
   }
 }

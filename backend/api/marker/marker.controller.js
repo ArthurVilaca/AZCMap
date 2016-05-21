@@ -3,24 +3,39 @@
 var Marker = require('./marker.model');
 var requestPromise = require('request-promise');
 var BaseController = require('../../interface/baseController');
+var profanityUtil = require('profanity-util');
+
+const PURIFYING_LANGUAGES = ['pt', 'en'];
+// Will use the same replacement every time
+const PURIFYING_REPLACEMENTS = ['?#@*&%!'];
 
 class MarkerController extends BaseController {
-    
+
   /**
   * Creates a new Marker
   */
-  create (req, res, next) {
+  create(req, res, next) {
     var data = req.body;
     var marker = new Marker(data);
     marker.creatorIp = req.clientIp;
-    this._create(marker, data)
+    this.purifyMarker(marker)
       .then(() => {
-        res.json({ data: marker.public });
+        return this._create(marker, data)
+          .then(() => {
+            return res.json({ data: marker.public });
+          });
       })
       .catch(this.validationError(res));
   }
   
-   _create (marker, data) {
+  purifyMarker (marker) {
+    return profanityUtil.purifyAsync(marker.description, { languages: PURIFYING_LANGUAGES, replace: true, replacementsList: PURIFYING_REPLACEMENTS })
+      .then(purifiedResult => {
+        marker.description = purifiedResult[0];
+      });
+  }
+
+  _create(marker, data) {
     return new Promise((resolve, reject) => {
       if (!data.creatorLocation) {
         this._createCheckingIp(marker, data)
@@ -43,13 +58,13 @@ class MarkerController extends BaseController {
       }
     });
   }
-  
-  _createCheckingIp (marker, data) {
+
+  _createCheckingIp(marker, data) {
     var options = {
       uri: 'http://freegeoip.net/json/' + marker.creatorIp,
       json: true
     };
-    
+
     return requestPromise(options)
       .then(userLocation => {
         console.log(userLocation);
@@ -59,19 +74,19 @@ class MarkerController extends BaseController {
             coordinates: [userLocation.longitude, userLocation.latitude]
           };
         }
-        
+
         return marker.save();
       });
   }
-  
+
   /**
   * Get all Markers
   */
-  all (req, res, next) {
+  all(req, res, next) {
     //TODO: find according to query parameters
     Marker.find()
       .then((markers) => {
-        res.json({ data: markers.map(marker => marker.public)});
+        res.json({ data: markers.map(marker => marker.public) });
       })
       .catch(this.handleError(res));
   }
@@ -79,7 +94,7 @@ class MarkerController extends BaseController {
   /**
   * Deletes a Marker
   */
-  destroy (req, res) {
+  destroy(req, res) {
     this.handleError(res, 403)(new Error('Delete function not yet available.'));
   }
   

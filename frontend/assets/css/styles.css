@@ -10,6 +10,13 @@ html, body {
 	font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+/**
+* By default, our icons will be large
+*/
+i.fa {
+  font-size: large;
+}
+
 #logo {
 	width: 50px;
 	display: inline-flex;
@@ -38,10 +45,15 @@ html, body {
 	z-index: 0;
 }
 
+#main-toolbar {
+ height: 64px;
+}
+
 .angular-google-map-container { 
 	position: absolute;
-	height: 100%;
+	height: calc(100% - 64px);
 	width: 100%;
+  top: 64px;
 }
 
 .addMarker { 
@@ -179,4 +191,20 @@ md-toast.error .md-toast-content {
 
 md-toast.success .md-toast-content {
     background-color: rgba(10, 156, 10, 0.88);
+}
+
+@media only screen and (max-width: 959px) and (min-width: 0) {
+  #main-toolbar {
+    height: 56px; 
+  }
+  
+  .angular-google-map-container {
+    top: 56px;
+    height: calc(100% - 56px);
+  }
+  
+  
+  i.fa {
+    font-size: x-large;
+  }
 }

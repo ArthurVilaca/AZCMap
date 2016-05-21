@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  var app = angular.module('zicaMap', ['uiGmapgoogle-maps', 'ngMaterial', 'infinite-scroll']);
+  var app = angular.module('zicaMap', ['uiGmapgoogle-maps', 'ngMaterial', 'infinite-scroll', 'chart.js']);
   
   //Config the angular google maps to use our key
   app.config(function(uiGmapGoogleMapApiProvider) {
@@ -31,25 +31,6 @@
         '<md-dialog-actions layout="row"> <md-button ng-click="hide();"> Cancelar </md-button> <md-button ng-click="newMarker();" class="md-primary"> Salvar </md-button> </md-dialog-actions>' +
         '</form></md-dialog>');
   }]);
-  
-  app.filter('orderObjectBy', function() {
-    return function(items, itemsToFilter, field, dateField, reverse) {
-      var filtered = [];
-      itemsToFilter.sort(function (a, b) {
-        return ((dateField? (new Date(a[field]) > new Date(b[field])) : a[field] > b[field]) ? 1 : -1);
-      });
-      if(reverse) itemsToFilter.reverse();
-      
-      for (var i = 0; i < itemsToFilter.length; i++) {
-        if (items[itemsToFilter[i]._id]) {
-          filtered.push(itemsToFilter[i]);
-        }
-      }
-      
-      return filtered;
-    };
-  });
-
   
   app.factory('mapDefaultOptions', function mapDefaultOptionsFactory() {
     var leftOptions = {
@@ -84,15 +65,13 @@
     };
     
     this.addMarker = function (marker, visible) {
-      if (google) {
+      if (typeof google !== 'undefined') {
         self._addMarker(marker, visible);
       } else {
         $timeout(function() {
           self._addMarker(marker, visible);
         }, 1000);
       }
-      
-      
     };
     
     this.showMarker = function (marker) {
@@ -124,7 +103,7 @@
     return new MarkerDrawer(uiGmapIsReady, $timeout);
   }]);
   
-  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', 'uiGmapIsReady', 'markerDrawer', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, uiGmapIsReady, markerDrawer) {
+  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', 'uiGmapIsReady', 'markerDrawer', '$http', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, uiGmapIsReady, markerDrawer, $http) {
     this.options = mapDefaultOptions;
     var self = this;
     $scope.timelineMarkers = [];
@@ -174,19 +153,16 @@
     };
 
     $scope.markers = [];
-    //TODO: Change to get request
-    socket.on('marker:all', function(event) {
-      $scope.$apply(function () {
-        $scope.markers = event.data;
-        for (var i = 0; i < $scope.markers.length; i++) {
-          markerDrawer.addMarker($scope.markers[i]);
-          
-          if (i <= 20 && $scope.timelineMarkers.length === 0) {
-            $scope.timelineMarkers.push($scope.markers[i]);
-          }
+    $http.get('/api/marker/all').then(function (response) {
+      $scope.markers = response.data.data;
+      for (var i = 0; i < $scope.markers.length; i++) {
+        markerDrawer.addMarker($scope.markers[i]);
+        
+        if (i <= 20 && $scope.timelineMarkers.length === 0) {
+          $scope.timelineMarkers.push($scope.markers[i]);
         }
-        markerDrawer.updateView();
-      });
+      }
+      markerDrawer.updateView();
     });
     
     socket.on('marker:save', function(event) {
@@ -205,13 +181,27 @@
       }
     };
 }]).controller('StatisticsCtrl', ['$scope', '$mdSidenav', '$mdMedia', '$window', function($scope, $mdSidenav, $mdMedia, $window) {
+  $scope.activeTab = 'timeline';
   
   $scope.close = function() {
     $mdSidenav('left').close();
   };
   
-  $scope.showCloseButton = function() {
-    return !$mdMedia('gt-md');
+  $scope.mdIsOpen = $mdMedia('gt-md');
+  
+  $scope.changeActiveTab = function (tab) {
+    $scope.activeTab = tab;
+  };
+  
+  // Testing the chart
+  $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+  $scope.series = ['Series A', 'Series B'];
+  $scope.data = [
+    [65, 59, 80, 81, 56, 55, 40],
+    [28, 48, 40, 19, 86, 27, 90]
+  ];
+  $scope.onClick = function (points, evt) {
+    console.log(points, evt);
   };
 
 }]).controller('AddMarkerCtrl', ['$scope', '$window', '$mdMedia', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $window, $mdMedia, $mdBottomSheet, $mdSidenav, $mdDialog){

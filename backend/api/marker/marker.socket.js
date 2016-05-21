@@ -11,7 +11,6 @@ var events = ['save', 'remove'];
 
 //client: the client that was connected
  function register(client) {
-  MarkerEvents.emitAllMarkers(client);
   // Bind model events to socket events
   for (var i = 0, eventsLength = events.length; i < eventsLength; i++) {
     var event = events[i];

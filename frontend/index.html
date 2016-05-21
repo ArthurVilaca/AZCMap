@@ -9,13 +9,11 @@
   <link rel="stylesheet" href="assets/css/timeline.css"></link>
   <script src="bower_components/socket.io-client/socket.io.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css">
   <link href="http://db.onlinewebfonts.com/c/737bf92a1c2df108cc14f74f8c8d3b6d?family=LeviReBrushed" rel="stylesheet" type="text/css"
   />
-
-  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-  <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
 </head>
 
@@ -23,7 +21,7 @@
 
   <section>
     <div id="main-box">
-      <md-toolbar style="position: absolute; z-index: 50; background-color: rgb(41,121,255);">
+      <md-toolbar id="main-toolbar" style="position: absolute; z-index: 50; background-color: rgb(41,121,255);">
         <div class="md-toolbar-tools">
           <md-button class="md-icon-button" ng-click="toggleLeft();" aria-label="Settings">
             <i class="fa fa-users"></i>
@@ -38,17 +36,19 @@
         </div>
       </md-toolbar>
       <div ng-controller="StatisticsCtrl as StatsCtrl">
-        <md-sidenav class="md-sidenav-left" id="sidenav-statistics" md-is-locked-open="$mdMedia('gt-md')" md-component-id="left"
-        md-disable-backdrop md-whiteframe="4">
+        <md-sidenav class="md-sidenav-left" id="sidenav-statistics" md-is-open="mdIsOpen" md-component-id="left" md-disable-backdrop
+        md-whiteframe="4">
+        
           <md-toolbar class="md-theme-indigo" id="toolbar-statistics">
             <div class="md-toolbar-tools">
-              <h1 style="margin-right: -10px;" class="">Timeline</h1>
+              <md-button class="md-icon-button" ng-click="changeActiveTab('timeline')"><i style="font-size: 1.5em;" class="fa fa-calendar" aria-label="Statistics"></i></md-button>
+              <md-button class="md-icon-button" ng-click="changeActiveTab('statistics')"><i style="font-size: 1.5em;" class="fa fa-line-chart" aria-label="Statistics"></i></md-button>
               <span flex></span>
-              <md-button ng-show="showCloseButton()" class="md-icon-button" ng-click="close()"><i style="font-size: 1.5em;" class="fa fa-chevron-left" aria-label="Close statistics menu"></i></md-button>
+              <md-button class="md-icon-button" ng-click="close()"><i style="font-size: 1.5em;" class="fa fa-chevron-left" aria-label="Close statistics menu"></i></md-button>
             </div>
           </md-toolbar>
           <md-content layout-padding style="height: 100%;">
-            <div id="timeline" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
+            <div id="timeline" ng-show="activeTab === 'timeline'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
               <div class="repeat-parent" ng-repeat="marker in timelineMarkers | orderBy:'creationDate':true" ng-cloak>
                 <div class="timeline-item">
                   <div class="timeline-icon"> <i class="fa fa-bug"></i> </div>
@@ -60,37 +60,54 @@
                 </div>
               </div>
             </div>
+            
+            <div id="statistics" ng-show="activeTab === 'statistics'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
+              <p>TODO: ADD MODAFUCKING AWESOME CHARTS: cases by city, cases by neighbourhood, cases by distance (this one needs to search from backend)</p>
+              <p>Example chart (http://jtblin.github.io/angular-chart.js/): </p>
+              <canvas id="line" class="chart chart-line" chart-data="data"
+                chart-labels="labels" chart-legend="true" chart-series="series"
+                chart-click="onClick" >
+              </canvas> 
+            </div>
           </md-content>
+
         </md-sidenav>
       </div>
       <div ng-controller="AddMarkerCtrl">
         <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)">
-          <ng-md-icon icon="add"></ng-md-icon>
-          <i class="fa fa-plus"></i>
+          <i style="vertical-align: middle" class="fa fa-plus"></i>
         </md-button>
       </div>
-      <ui-gmap-google-map center="map.center"" events="MapCtrl.mapEvents" control="map.control" options="MapCtrl.options" zoom="map.zoom">
+      <ui-gmap-google-map center="map.center" " events="MapCtrl.mapEvents " control="map.control " options="MapCtrl.options
+      " zoom="map.zoom ">
         <!--Markers are now added dinamically. Only markers that fit the map bounds are shown-->
-        <!--<ui-gmap-marker ng-repeat="marker in markers track by marker._id" coords="::marker.location.coordinates" options="::marker.options" events="::marker.events"
-        idkey="::marker._id">-->
+        <!--<ui-gmap-marker ng-repeat="marker in markers track by marker._id " coords="::marker.location.coordinates
+      " options="::marker.options " events="::marker.events "
+        idkey="::marker._id ">-->
         </ui-gmap-marker>
       </ui-gmap-google-map>
     </div>
   </section>
 
-  <script src="bower_components/angular/angular.min.js"></script>
-  <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js"></script>
-  <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
-  <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
-  <script src="bower_components/lodash/dist/lodash.min.js"></script>
-  <script src="assets/js/vendor/vs-repeat.js"></script>
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+  <script src="bower_components/angular/angular.min.js "></script>
+  <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js "></script>
+  <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js "></script>
+  <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js "></script>
+  <script src="bower_components/Chart.js/Chart.js"></script>
+  <script src="bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
+  <script src="bower_components/lodash/dist/lodash.min.js "></script>
+  <script src="assets/js/vendor/vs-repeat.js "></script>
 
-  <script src="assets/js/app.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js "></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js "></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js "></script>
+  <!--Last version of angular material sidenav will show backdrop even if disableBackDrop is set in the directive, so we will use ours for now-->
+  <script src="assets/js/vendor/angular-material.js "></script>
+
+  <script src="assets/js/app.js "></script>
 
 </body>
 

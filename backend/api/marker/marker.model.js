@@ -47,6 +47,7 @@ MarkerSchema
     return {
       _id: this._id,
       userName: this.userName,
+      address: this.address,
       description: this.description,
       location: this.location,
       type: this.type,
