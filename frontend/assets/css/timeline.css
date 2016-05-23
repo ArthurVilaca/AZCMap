@@ -265,3 +265,7 @@ header .social .btn {
   margin-top: -9px;
   text-align: right;
 }
+
+.timeline-content {
+  cursor: pointer;
+}

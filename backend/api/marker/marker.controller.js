@@ -22,7 +22,7 @@ class MarkerController extends BaseController {
       .then(() => {
         return this._create(marker, data)
           .then(() => {
-            return res.json({ data: marker.public });
+            return res.json({ marker: marker.public });
           });
       })
       .catch(this.validationError(res));
@@ -86,7 +86,7 @@ class MarkerController extends BaseController {
     //TODO: find according to query parameters
     Marker.find()
       .then((markers) => {
-        res.json({ data: markers.map(marker => marker.public) });
+        res.json({ markers: markers.map(marker => marker.public) });
       })
       .catch(this.handleError(res));
   }
