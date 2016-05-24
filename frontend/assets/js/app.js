@@ -49,6 +49,21 @@
       zoomControlOptions: leftOptions
     };
   });
+
+  var markerImages;
+  
+  function createMarkerImages() {
+    markerImages = {
+      1: window.location.href + 'assets/img/marker_foco.png',
+      2: window.location.href + 'assets/img/marker_zika.png',
+      3: window.location.href + 'assets/img/marker_dengue.png',
+      4: window.location.href + 'assets/img/marker_chikungunya.png'
+    };
+  }
+  
+  function getMarkerImageByType(type) {
+    return markerImages[type];
+  }
   
   function MarkerDrawer(uiGmapIsReady, $timeout) {
     var self = this;
@@ -65,7 +80,8 @@
     this._addMarker = function (marker, visible) {
       var markerToAdd = new google.maps.Marker({
         position: {lat: marker.location.coordinates[1], lng: marker.location.coordinates[0]},
-        map: visible? self.map : null
+        map: visible? self.map : null,
+        icon: getMarkerImageByType(marker.type)
       });
       markerToAdd._id = marker._id;
       self.mapMarkers.push(markerToAdd);
@@ -73,9 +89,16 @@
     
     this.addMarker = function (marker, visible) {
       if (typeof google !== 'undefined') {
+        if (!markerImages) {
+          createMarkerImages();
+        }
+        
         self._addMarker(marker, visible);
       } else {
         $timeout(function() {
+          if (!markerImages) {
+            createMarkerImages();
+          }
           self._addMarker(marker, visible);
         }, 1000);
       }
@@ -174,6 +197,10 @@
         }
       }
       markerDrawer.updateView();
+      
+      $timeout(function () {
+        markerDrawer.updateView();
+      }, 2000);
     });
     
     socket.on('marker:save', function(event) {
