@@ -53,16 +53,16 @@
                 <div class="timeline-item">
                   <div class="timeline-icon"> <i class="fa fa-bug"></i> </div>
                   <div class="timeline-content right" ng-click="panToMarker(marker)">
-                    <h4>{{::marker.userName}}</h4>
-                    <p>{{::marker.description}}</p>
-                    <p>{{marker.creationDate|date}}</p>
+                    <h4 ng-bind="::marker.userName"></h4>
+                    <p ng-bind="::marker.description"></p>
+                    <p ng-bind="marker.creationDate|date"></p>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div id="statistics" ng-show="activeTab === 'statistics'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
-              <p style="display: none">TODO: ADD MODAFUCKING AWESOME CHARTS: cases by city, cases by neighbourhood, cases by distance (this one needs to search from backend)</p>
+            <div id="statistics" ng-cloak ng-show="activeTab === 'statistics'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
+              <!--TODO: ADD MODAFUCKING AWESOME CHARTS: cases by city, cases by neighbourhood, cases by distance (this one needs to search from backend)-->
               <!--<h2 style="margin-top: -10px;"><b>Estatísticas para {{currentCity || 'Belo Horizonte'}}</b></h2>-->
               <p style="margin-top: -8px;">Nos últimos 3 meses foram registrados <b>{{lastMonthsMarkersCount + ' casos'}}</b> em {{currentCity || 'Belo Horizonte'}}</p>
               <canvas id="cases-type-by-city" class="chart chart-pie" chart-data="casesTypeByCity"

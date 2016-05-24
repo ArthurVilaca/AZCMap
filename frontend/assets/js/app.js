@@ -133,7 +133,7 @@
     return new MarkerDrawer(uiGmapIsReady, $timeout);
   }]);
   
-  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', 'uiGmapIsReady', 'markerDrawer', '$http', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, uiGmapIsReady, markerDrawer, $http) {
+  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', 'uiGmapIsReady', 'markerDrawer', '$http', '$timeout', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, uiGmapIsReady, markerDrawer, $http, $timeout) {
     this.options = mapDefaultOptions;
     var self = this;
     $scope.timelineMarkers = [];
