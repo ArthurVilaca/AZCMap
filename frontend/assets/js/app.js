@@ -241,50 +241,53 @@
     console.log(points, evt);
   };
   
-  $scope.$watch('markers', function (newMarkers, oldMarkers) {
-    $scope.casesTypeByCity = [];
-    var casesByNeighbourhood = {};
-    var currentDate = new Date();
-    $scope.lastMonthsMarkersCount = 0;
-    currentDate.setMilliseconds(999);
-    currentDate.setSeconds(59);
-    currentDate.setHours(23);
-    var thresholdDate = new Date();
-    thresholdDate.setMonth(currentDate.getMonth() - 3);
-    
-    var lastMonthsMarkers = newMarkers.filter(function (marker) {
-      var ret = false;
-      if (new Date(marker.creationDate || marker.date) > thresholdDate) {
-        $scope.lastMonthsMarkersCount++;        
-        ret = true;
+  $scope.$watch('markers.length', function (newLength, oldLength) {
+    if (newLength && newLength !== oldLength) {
+      var markers = $scope.markers;
+      $scope.casesTypeByCity = [];
+      var casesByNeighbourhood = {};
+      var currentDate = new Date();
+      $scope.lastMonthsMarkersCount = 0;
+      currentDate.setMilliseconds(999);
+      currentDate.setSeconds(59);
+      currentDate.setHours(23);
+      var thresholdDate = new Date();
+      thresholdDate.setMonth(currentDate.getMonth() - 3);
+      
+      var lastMonthsMarkers = markers.filter(function (marker) {
+        var ret = false;
+        if (new Date(marker.creationDate || marker.date) > thresholdDate) {
+          $scope.lastMonthsMarkersCount++;        
+          ret = true;
+        }
+        return ret;
+      });
+      
+      $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Focus point']; }).length);
+      $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Dengue case']; }).length);
+      $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Zika case']; }).length);
+      $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Chikungunya case']; }).length);
+      
+      markers.forEach(function (marker, index) {
+        var neighbourhood = marker.address.neighbourhood;
+        if (typeof casesByNeighbourhood[neighbourhood] !== 'undefined') {
+          casesByNeighbourhood[neighbourhood] += 1;
+        } else {
+          casesByNeighbourhood[neighbourhood] = 1;
+        }
+      });
+      
+      var neighbourhoodCounter = 0;
+      for (var neighbourhood in casesByNeighbourhood) {
+        $scope.neighbourhoodsByCity.push(neighbourhood === 'undefined'? 'Outros' : neighbourhood);
+        $scope.casesByNeighbourhood[0][neighbourhoodCounter] = casesByNeighbourhood[neighbourhood];
+        neighbourhoodCounter++;
       }
-      return ret;
-    });
-    
-    $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Focus point']; }).length);
-    $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Dengue case']; }).length);
-    $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Zika case']; }).length);
-    $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Chikungunya case']; }).length);
-    
-    newMarkers.forEach(function (marker, index) {
-      var neighbourhood = marker.address.neighbourhood;
-      if (typeof casesByNeighbourhood[neighbourhood] !== 'undefined') {
-        casesByNeighbourhood[neighbourhood] += 1;
-      } else {
-        casesByNeighbourhood[neighbourhood] = 1;
+      
+      // Force the charts update
+      if (!$scope.$$phase) {
+        $scope.$apply();
       }
-    });
-    
-    var neighbourhoodCounter = 0;
-    for (var neighbourhood in casesByNeighbourhood) {
-      $scope.neighbourhoodsByCity.push(neighbourhood === 'undefined'? 'Outros' : neighbourhood);
-      $scope.casesByNeighbourhood[0][neighbourhoodCounter] = casesByNeighbourhood[neighbourhood];
-      neighbourhoodCounter++;
-    }
-    
-    // Force the charts update
-    if (!$scope.$$phase) {
-      $scope.$apply();
     }
   });
 

@@ -49,7 +49,7 @@
           </md-toolbar>
           <md-content layout-padding style="height: 100%;">
             <div id="timeline" ng-show="activeTab === 'timeline'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
-              <div class="repeat-parent" ng-repeat="marker in timelineMarkers | orderBy:'creationDate':true" ng-cloak>
+              <div class="repeat-parent" ng-repeat="marker in timelineMarkers | orderBy:'creationDate':true">
                 <div class="timeline-item">
                   <div class="timeline-icon"> <i class="fa fa-bug"></i> </div>
                   <div class="timeline-content right" ng-click="panToMarker(marker)">
@@ -61,16 +61,16 @@
               </div>
             </div>
             
-            <div id="statistics" ng-cloak ng-show="activeTab === 'statistics'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
+            <div id="statistics" ng-show="activeTab === 'statistics'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
               <!--TODO: ADD MODAFUCKING AWESOME CHARTS: cases by city, cases by neighbourhood, cases by distance (this one needs to search from backend)-->
               <!--<h2 style="margin-top: -10px;"><b>Estatísticas para {{currentCity || 'Belo Horizonte'}}</b></h2>-->
-              <p style="margin-top: -8px;">Nos últimos 3 meses foram registrados <b>{{lastMonthsMarkersCount + ' casos'}}</b> em {{currentCity || 'Belo Horizonte'}}</p>
+              <p style="margin-top: -8px;">Nos últimos 3 meses foram registrados <b ng-bind="lastMonthsMarkersCount + ' casos'"></b> em <span ng-bind="currentCity || 'Belo Horizonte'"></span></p>
               <canvas id="cases-type-by-city" class="chart chart-pie" chart-data="casesTypeByCity"
                 chart-labels="typesByCity" chart-click="onClick"
                 chart-colours="['#96F7BA', '#CA3838', '#E2DA7C', '#6390DB']">
               </canvas>
               
-              <p>Ranking dos bairros de {{currentCity || 'Belo Horizonte'}}</p>
+              <p>Ranking dos bairros de <span ng-bind="currentCity || 'Belo Horizonte'"></span></p>
               
               <canvas id="cases-by-neighbourhood" class="chart chart-bar" chart-data="casesByNeighbourhood"
                 chart-labels="neighbourhoodsByCity"
