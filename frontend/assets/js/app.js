@@ -1,6 +1,11 @@
 (function(){
   'use strict';
-  var app = angular.module('zicaMap', ['uiGmapgoogle-maps', 'ngMaterial', 'infinite-scroll', 'chart.js']);
+  
+  Highcharts.setOptions({
+      colors: [ '#2979FF', '#2B9AF2', '#EE5555', '#448AFF']
+  });
+  
+  var app = angular.module('zicaMap', ['uiGmapgoogle-maps', 'ngMaterial', 'infinite-scroll', 'highcharts-ng']);
   
   var MARKER_TYPES = {
     'Focus point': 1,
@@ -8,15 +13,20 @@
     'Dengue case': 3,
     'Chikungunya case': 4
   };
-    
+  
+  var FOCUS_POINT_LABEL = 'Foco do mosquito';
+  var ZIKA_LABEL = 'Zika';
+  var DENGUE_LABEL = 'Dengue';
+  var CHIKUNGUNYA_LABEL = 'Chikungunya';
+  
   //Config the angular google maps to use our key
-  app.config(function(uiGmapGoogleMapApiProvider, ChartJsProvider) {
+  app.config(function(uiGmapGoogleMapApiProvider) {
     uiGmapGoogleMapApiProvider.configure({
         key: 'AIzaSyBHdrTrrlUvUOMsU7SdCvZgKEUvutZL4HQ',
         libraries: 'places'
     });
     
-    ChartJsProvider.setOptions({ colours : [ '#2979FF', '#2B9AF2', '#EE5555', '#448AFF'] });
+    //ChartJsProvider.setOptions({ colours : [ '#2979FF', '#2B9AF2', '#EE5555', '#448AFF'] });
   });
   
   app.run(['$templateCache', function ($templateCache) {
@@ -51,27 +61,28 @@
       zoomControlOptions: leftOptions
     };
   });
-
-  var markerImages;
   
-  function createMarkerImages() {
-    markerImages = {
-      1: window.location.href + 'assets/img/marker_foco.png',
-      2: window.location.href + 'assets/img/marker_zika.png',
-      3: window.location.href + 'assets/img/marker_dengue.png',
-      4: window.location.href + 'assets/img/marker_chikungunya.png'
-    };
-  }
+  function MarkerDrawer(uiGmapIsReady, requestService, $timeout) {
+    
+    var markerImages;
   
-  function getMarkerImageByType(type) {
-    return markerImages[type];
-  }
+    function createMarkerImages() {
+      markerImages = {
+        1: requestService.getRealUrl('assets/img/marker_foco.png'),
+        2: requestService.getRealUrl('assets/img/marker_zika.png'),
+        3: requestService.getRealUrl('assets/img/marker_dengue.png'),
+        4: requestService.getRealUrl('assets/img/marker_chikungunya.png')
+      };
+    }
   
-  function MarkerDrawer(uiGmapIsReady, $timeout) {
+    function getMarkerImageByType(type) {
+      return markerImages[type];
+    }
+  
     var self = this;
     this.mapMarkers = [];
-    
-    uiGmapIsReady.promise(1).then(function(instances) {
+    var mapReadyPromise = uiGmapIsReady.promise(1);
+    mapReadyPromise.then(function(instances) {
       if (instances && instances.length > 0) {
         var instance = instances[0];
         
@@ -90,20 +101,12 @@
     };
     
     this.addMarker = function (marker, visible) {
-      if (typeof google !== 'undefined') {
+      mapReadyPromise.then(function () {
         if (!markerImages) {
           createMarkerImages();
         }
-        
         self._addMarker(marker, visible);
-      } else {
-        $timeout(function() {
-          if (!markerImages) {
-            createMarkerImages();
-          }
-          self._addMarker(marker, visible);
-        }, 1000);
-      }
+      });
     };
     
     this.showMarker = function (marker) {
@@ -115,7 +118,7 @@
     };
     
     this.updateView = function () {
-      if (self.map) {
+      mapReadyPromise.then(function () {
         var bounds = self.map.getBounds();
         
         for (var i =0; i < self.mapMarkers.length; i++) {
@@ -127,15 +130,42 @@
             self.hideMarker(marker);
           }
         }
-      }
+      });
     };
   }
   
-  app.factory('markerDrawer', ['uiGmapIsReady', '$timeout', function (uiGmapIsReady, $timeout) {
-    return new MarkerDrawer(uiGmapIsReady, $timeout);
+  function RequestService($http) {
+    var serviceUrl = 'http://azcmap.bitnamiapp.com';
+    
+    this.setServiceUrl = function setServiceUrl(url) {
+      if (url) {
+        serviceUrl = url;
+      }
+    };
+    this.getServiceUrl = function getServiceUrl() {
+      return serviceUrl;
+    };
+    
+    this.getRealUrl = function getRealUrl(url) {
+      return serviceUrl + (url[0] === '/'? '' : '/') + url;
+    };
+    
+    this.get = function get() {
+      var service = arguments[0];
+      arguments[0] = this.getRealUrl(service);
+      return $http.get.apply($http, arguments);
+    };
+  }
+  
+  app.service('requestService', ['$http', function ($http) {
+    return new RequestService($http);
   }]);
   
-  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', 'uiGmapIsReady', 'markerDrawer', '$http', '$timeout', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, uiGmapIsReady, markerDrawer, $http, $timeout) {
+  app.service('markerDrawer', ['uiGmapIsReady', 'requestService', '$timeout', function (uiGmapIsReady, requestService, $timeout) {
+    return new MarkerDrawer(uiGmapIsReady, requestService, $timeout);
+  }]);
+  
+  app.controller("MapCtrl", ['$scope', '$rootScope', '$window', '$mdSidenav', 'mapDefaultOptions', 'uiGmapIsReady', 'markerDrawer', '$http', 'requestService', function($scope, $rootScope, $window, $mdSidenav, mapDefaultOptions, uiGmapIsReady, markerDrawer, $http, requestService) {
     this.options = mapDefaultOptions;
     var self = this;
     $scope.timelineMarkers = [];
@@ -189,7 +219,7 @@
     };
 
     $scope.markers = [];
-    $http.get('/api/marker/all').then(function (response) {
+    requestService.get('/api/marker/all').then(function (response) {
       $scope.markers = response.data.markers;
       for (var i = 0; i < $scope.markers.length; i++) {
         markerDrawer.addMarker($scope.markers[i]);
@@ -199,10 +229,6 @@
         }
       }
       markerDrawer.updateView();
-      
-      $timeout(function () {
-        markerDrawer.updateView();
-      }, 2000);
     });
     
     socket.on('marker:save', function(event) {
@@ -220,11 +246,91 @@
         
       }
     };
-}]).controller('StatisticsCtrl', ['$scope', '$mdSidenav', '$mdMedia', '$window', function($scope, $mdSidenav, $mdMedia, $window) {
+}]).controller('StatisticsCtrl', ['$scope', '$mdSidenav', '$mdMedia', '$window', 'requestService', function($scope, $mdSidenav, $mdMedia, $window, requestService) {
   $scope.activeTab = 'timeline';
   $scope.lastMonthsMarkersCount = 0;
   $scope.neighbourhoodsByCity = [];
   $scope.casesByNeighbourhood = [[]];
+  
+  var caseIcons = {
+    1: requestService.getRealUrl('assets/img/icon_foco.png'),
+    2: requestService.getRealUrl('assets/img/icon_zika.png'),
+    3: requestService.getRealUrl('assets/img/icon_dengue.png'),
+    4: requestService.getRealUrl('assets/img/icon_chikungunya.png')
+  };
+  
+  this.getCaseIconFromMarkerType = function getCaseIconFromMarkerType(type) {
+    return caseIcons[type];
+  };
+  
+  var casesTypeColorMap = {};
+  casesTypeColorMap[FOCUS_POINT_LABEL] = '#96F7BA';
+  casesTypeColorMap[CHIKUNGUNYA_LABEL] = '#D9D075';
+  casesTypeColorMap[DENGUE_LABEL] = '#CA3838';
+  casesTypeColorMap[ZIKA_LABEL] = '#6390DB';
+  
+  $scope.casesTypeConfig = {
+    options: {
+      chart: {
+        type: 'pie'
+      }
+    },
+    xAxis: {
+      labels: {
+        enabled: true,
+        formatter: function getLabelFromValue() {
+          return $scope.casesTypeConfig.series[0].data[this.value].name;
+        }
+      }
+    },
+    series: [{
+      data: [],
+      tooltip: {
+        followPointer: false,
+        hideDelay: 100,
+        pointFormat: '<b>{point.y}</b><br/>',
+        valueSuffix: ' casos'
+      },
+    }],
+    title: {
+      text: ''
+    },
+    loading: false
+  };
+  $scope.casesByNeighbourhoodConfig = {
+    options: {
+      chart: {
+        type: 'column'
+      }
+    },
+    xAxis: {
+      labels: {
+        enabled: true,
+        formatter: function getLabelFromValue() {
+          return $scope.casesByNeighbourhoodConfig.series[0].data[this.value][0];
+        }
+      }
+    },
+    yAxis: {
+      title: {
+        text: 'Casos'
+      }
+    },
+    series: [{ 
+      data: [],
+      name: 'Bairros',
+      tooltip: {
+        followPointer: false,
+        hideDelay: 100,
+        pointFormat: '<b>{point.y}</b><br/>',
+        valueSuffix: ' casos'
+      },
+    }],
+    title: {
+      text: ''
+    },
+    loading: false
+  };
   
   $scope.close = function() {
     $mdSidenav('left').close();
@@ -238,13 +344,20 @@
   
   // Testing the chart
   $scope.typesByCity = ["Foco do mosquito", "Dengue", "Chikungunya", "Zika"];
-  $scope.casesTypeByCity = [];
+  
+  function countMarkersByType (markers, type) {
+    return markers.filter(function (marker) { return marker.type === type; }).length;
+  }
   
   $scope.$watch('markers.length', function (newLength, oldLength) {
     if (newLength && newLength !== oldLength) {
       var markers = $scope.markers;
-      $scope.casesTypeByCity = [];
-      var casesByNeighbourhood = {};
+      $scope.casesTypeConfig.series[0].data = [];
+      var casesTypeByCity = $scope.casesTypeConfig.series[0].data;
+      
+      $scope.casesByNeighbourhoodConfig.series[0].data = [];
+      var casesByNeighbourhood = $scope.casesByNeighbourhoodConfig.series[0].data;
+      
       var currentDate = new Date();
       $scope.lastMonthsMarkersCount = 0;
       currentDate.setMilliseconds(999);
@@ -262,31 +375,43 @@
         return ret;
       });
       
-      $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Focus point']; }).length);
-      $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Dengue case']; }).length);
-      $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Zika case']; }).length);
-      $scope.casesTypeByCity.push(lastMonthsMarkers.filter(function (marker) { return marker.type === MARKER_TYPES['Chikungunya case']; }).length);
+      casesTypeByCity.push({name: FOCUS_POINT_LABEL, color: casesTypeColorMap[FOCUS_POINT_LABEL], y: countMarkersByType(lastMonthsMarkers, MARKER_TYPES['Focus point']) });
+      casesTypeByCity.push({name: DENGUE_LABEL,  color: casesTypeColorMap[DENGUE_LABEL], y: countMarkersByType(lastMonthsMarkers, MARKER_TYPES['Dengue case']) });
+      casesTypeByCity.push({name: ZIKA_LABEL, color: casesTypeColorMap[ZIKA_LABEL], y: countMarkersByType(lastMonthsMarkers, MARKER_TYPES['Zika case']) });
+      casesTypeByCity.push({name: CHIKUNGUNYA_LABEL, color: casesTypeColorMap[CHIKUNGUNYA_LABEL], y: countMarkersByType(lastMonthsMarkers, MARKER_TYPES['Chikungunya case']) });
       
       markers.forEach(function (marker, index) {
-        var neighbourhood = marker.address.neighbourhood;
-        if (typeof casesByNeighbourhood[neighbourhood] !== 'undefined') {
-          casesByNeighbourhood[neighbourhood] += 1;
+        var neighbourhood = marker.address? marker.address.neighbourhood : null;
+        var seriesValueByNeighbourhood;
+        if (neighbourhood) {
+          seriesValueByNeighbourhood = casesByNeighbourhood.filter(function (seriesValue) {
+            return seriesValue[0] === neighbourhood;
+          })[0];
         } else {
-          casesByNeighbourhood[neighbourhood] = 1;
+          seriesValueByNeighbourhood = casesByNeighbourhood.filter(function (seriesValue) {
+            return seriesValue[0] === 'Outros';
+          })[0];
         }
+        
+        if (!seriesValueByNeighbourhood) {
+          seriesValueByNeighbourhood = [neighbourhood || 'Outros', 1];
+          casesByNeighbourhood.push(seriesValueByNeighbourhood);
+        } else {
+          casesByNeighbourhood[casesByNeighbourhood.indexOf(seriesValueByNeighbourhood)][1]++;
+        }
+        
       });
       
-      var neighbourhoodCounter = 0;
-      for (var neighbourhood in casesByNeighbourhood) {
-        $scope.neighbourhoodsByCity.push(neighbourhood === 'undefined'? 'Outros' : neighbourhood);
-        $scope.casesByNeighbourhood[0][neighbourhoodCounter] = casesByNeighbourhood[neighbourhood];
-        neighbourhoodCounter++;
-      }
+    }
+  });
+  
+  $scope.$watch(function () { return $('#statistics').width(); }, function (currentValue, oldValue) {
+    if (currentValue !== oldValue) {
+      $('#cases-type-by-city').width(currentValue);
+      $('#cases-by-neighbourhood').width(currentValue);
       
-      // Force the charts update
-      if (!$scope.$$phase) {
-        $scope.$apply();
-      }
+      $scope.casesTypeConfig.getHighcharts().redraw();
+      $scope.casesByNeighbourhoodConfig.getHighcharts().redraw();
     }
   });
 
@@ -307,8 +432,43 @@
       fullScreenDialog = (wantsFullScreen === true);
     });
 
-  }]).controller('DialogController', ['$scope', '$mdDialog', '$rootScope', '$http', 'mapDefaultOptions', '$timeout', '$mdToast', function($scope, $mdDialog, $rootScope, $http, mapDefaultOptions, $timeout, $mdToast) {
+  }]).controller('DialogController', ['$scope', 'requestService', '$mdDialog', '$rootScope', '$http', 'mapDefaultOptions', '$timeout', '$mdToast', function($scope, requestService, $mdDialog, $rootScope, $http, mapDefaultOptions, $timeout, $mdToast) {
     var self = this;
+    
+    function getAddressFromAddressComponents(addressComponents) {
+      var address = {};
+      
+      for (var i in addressComponents) {
+        var addressComponent = addressComponents[i];
+        
+        for (var j in addressComponent.types) {
+          var type = addressComponent.types[j];
+          
+          switch (type) {
+            case 'street_number':
+            address.streetNumber = addressComponent.long_name;
+              break;
+            case 'route':
+              address.street = addressComponent.long_name;
+              break;
+            case 'sublocality_level_1' || 'sublocality':
+              address.neighbourhood = addressComponent.long_name;
+              break;
+            case 'locality':
+              address.city = addressComponent.long_name;
+              break;
+            case 'administrative_area_level_1':
+              address.state = addressComponent.long_name;
+              break;
+            case 'country':
+              address.country = addressComponent.long_name;
+              break;
+          }
+        }
+      }
+      
+      return address;
+    }
     
     this.searchbox = {
       template: 'searchbox.tpl.html',
@@ -322,49 +482,10 @@
                 places[i].geometry.location.lat()
               ];
               
-              var street;
-              var streetNumber;
-              var neighbourhood;
-              var city;
-              var state;
-              var country;
-              
-              places[i].address_components.forEach(function (addressComp) {
-                addressComp.types.forEach(function (type) {
-                  switch (type) {
-                    case 'street_number':
-                    streetNumber = addressComp.long_name;
-                      break;
-                    case 'route':
-                      street = addressComp.long_name;
-                      break;
-                    case 'sublocality_level_1' || 'sublocality':
-                      neighbourhood = addressComp.long_name;
-                      break;
-                    case 'locality':
-                      city = addressComp.long_name;
-                      break;
-                    case 'administrative_area_level_1':
-                      state = addressComp.long_name;
-                      break;
-                    case 'country':
-                      country = addressComp.long_name;
-                      break;
-                  }
-                });
-              });
-              
-              $scope.marker.address = {
-                street: street,
-                number: streetNumber,
-                neighbourhood: neighbourhood,
-                city: city,
-                state: state,
-                country: country
-              };
+              $scope.marker.address = getAddressFromAddressComponents(places[i].address_components);
               
               self.centerMap(places[i].geometry.location.lat(),places[i].geometry.location.lng());
-            }            
+            }
         }
       }
     };
@@ -428,32 +549,48 @@
 
     $scope.newMarker = function () {
       if ($scope.markerForm.$valid) {
+        var marker = $scope.marker;
+        
         if ($rootScope.creatorLocation !== undefined) {
-          $scope.marker.creatorLocation.coordinates = [$rootScope.creatorLocation.longitude, $rootScope.creatorLocation.latitude];
+          marker.creatorLocation.coordinates = [$rootScope.creatorLocation.longitude, $rootScope.creatorLocation.latitude];
         }
         
-        $http.post('/api/marker', $scope.marker)
-          .then(function (response) {
-            showToast('top right', 'Caso salvo com sucesso!', 'success', 1500);
-            $scope.hide();
-          })
-          .catch(function (response) {
-            showToast('top right', response.data.error.message, 'error', 1500);
+        if (!marker.address || !marker.address.neighbourhood) {
+          var geocoder = new google.maps.Geocoder();
+          var latlng = {lat: marker.location.coordinates[1], lng: marker.location.coordinates[0]};
+          geocoder.geocode({ location: latlng }, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+              if (results[0]) {
+                $scope.marker.address = getAddressFromAddressComponents(results[0].address_components);
+              }
+            }
+            
+            saveMarker(marker);
           });
+        } else {
+          saveMarker(marker);
+        }
       }
     };
     
-    function showToast(position, message, toastClass, hideDelay) {
-      $mdToast.show({
-        template: '<md-toast class="' + toastClass + '">' + message + '</md-toast>',
-        position: position,
-        hideDelay: hideDelay || 1500
-      });
+    function saveMarker(marker) {
+      $http.post('/api/marker', marker)
+        .then(function (response) {
+          showToast('Caso salvo com sucesso!');
+          $scope.hide();
+        })
+        .catch(function (response) {
+          showToast(response.data.error.message);
+        });
+    }
+    
+    function showToast(message) {
+      $mdToast.showSimple(message);
     }
 
     $scope.cases = [
     { type: "Foco do mosquisto", id: 1 },
-    { type: "Caso de zica", id: 2 },
+    { type: "Caso de Zika", id: 2 },
     { type: "Caso de Dengue", id: 3 },
     { type: "Caso de Chikungunya", id: 4 }];
 }]);

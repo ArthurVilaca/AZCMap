@@ -3,11 +3,14 @@
 */
 a[href^="https://maps.google.com/maps"]{display:none !important}
 
+*, html, body, h1, h2, h3, h4, p {
+  font-family: "Roboto", "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 /**
@@ -206,5 +209,11 @@ md-toast.success .md-toast-content {
   
   i.fa {
     font-size: x-large;
+  }
+}
+
+@media screen and (min-width: 457px) {
+  #sidenav-statistics {
+    width: 400px;
   }
 }

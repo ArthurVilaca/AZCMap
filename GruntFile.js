@@ -7,19 +7,19 @@ module.exports = function (grunt) {
 
   var dependenciesPath = [
     'frontend/bower_components/socket.io-client/socket.io.js',
-    'frontend/bower_components/lodash/dist/lodash.js',
-    'frontend/bower_components/jquery/dist/jquery.js',
-    'frontend/bower_components/jquery-mobile-bower/js/jquery.mobile-1.4.5.js',
-    'frontend/bower_components/angular/angular.js',
-    'frontend/bower_components/angular-animate/angular-animate.js',
-    'frontend/bower_components/angular-aria/angular-aria.js',
-    'frontend/bower_components/angular-messages/angular-messages.js',
-    'frontend/assets/js/vendor/angular-material.js',//For now we are using angular material from vendor, which have some stuff that are just on their master
-    'frontend/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
-    'frontend/bower_components/angular-google-maps/dist/angular-google-maps.js',
-    'frontend/bower_components/angular-simple-logger/dist/angular-simple-logger.js',
-    'frontend/bower_components/Chart.js/Chart.js',
-    'frontend/bower_components/angular-chart.js/dist/angular-chart.js',
+    'frontend/bower_components/lodash/dist/lodash.min.js',
+    'frontend/bower_components/jquery/dist/jquery.min.js',
+    'frontend/bower_components/jquery-mobile-bower/min.js/jquery.mobile-1.4.5.min.js',
+    'frontend/bower_components/angular/angular.min.js',
+    'frontend/bower_components/angular-animate/angular-animate.min.js',
+    'frontend/bower_components/angular-aria/angular-aria.min.js',
+    'frontend/bower_components/angular-messages/angular-messages.min.js',
+    'frontend/assets/js/vendor/angular-material.js',// For now we are using angular material from vendor folder, which have some fixes that are just on their master,
+    'frontend/bower_components/highcharts/highcharts.js',
+    'frontend/bower_components/highcharts-ng/dist/highcharts-ng.min.js',
+    'frontend/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js',
+    'frontend/bower_components/angular-google-maps/dist/angular-google-maps.min.js',
+    'frontend/bower_components/angular-simple-logger/dist/angular-simple-logger.min.js',
     'frontend/assets/js/vendor/vs-repeat.js'
   ];
 
@@ -54,6 +54,7 @@ module.exports = function (grunt) {
       options: {
         mangle: false,
         compress: false,
+        screwIE8: true,
         report: 'min',
         // the banner is inserted at the top of the output
         banner: '/*! <%= grunt.template.today("dd-mm-yyyy") %> */\n'

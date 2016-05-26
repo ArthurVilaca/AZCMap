@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="assets/css/timeline.css"></link>
   <script src="bower_components/socket.io-client/socket.io.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css">
   <link href="http://db.onlinewebfonts.com/c/737bf92a1c2df108cc14f74f8c8d3b6d?family=LeviReBrushed" rel="stylesheet" type="text/css"
@@ -20,7 +19,7 @@
 <body ng-controller="MapCtrl as MapCtrl">
 
   <section>
-    <div id="main-box">
+    <div id="main-box" style="min-width: 320px;">
       <md-toolbar id="main-toolbar" style="position: absolute; z-index: 50; background-color: rgb(41,121,255);">
         <div class="md-toolbar-tools">
           <md-button class="md-icon-button" ng-click="toggleLeft();" aria-label="Settings">
@@ -36,22 +35,32 @@
         </div>
       </md-toolbar>
       <div ng-controller="StatisticsCtrl as StatsCtrl">
-        <md-sidenav class="md-sidenav-left" id="sidenav-statistics" md-is-open="mdIsOpen" md-component-id="left" md-disable-backdrop
+        <md-sidenav style="min-width: 306px;" class="md-sidenav-left" id="sidenav-statistics" md-is-open="mdIsOpen" md-component-id="left" md-disable-backdrop
         md-whiteframe="4">
         
           <md-toolbar class="md-theme-indigo" id="toolbar-statistics">
             <div class="md-toolbar-tools">
-              <md-button class="md-icon-button" ng-click="changeActiveTab('timeline')"><i style="font-size: 1.5em;" class="fa fa-calendar" aria-label="Statistics"></i></md-button>
-              <md-button class="md-icon-button" ng-click="changeActiveTab('statistics')"><i style="font-size: 1.5em;" class="fa fa-line-chart" aria-label="Statistics"></i></md-button>
+              <md-button class="md-button" ng-click="changeActiveTab('timeline')">
+                <i style="font-size: 1.5em;" class="fa fa-calendar" aria-label="Linha do tempo"></i>
+                <md-tooltip>
+                  Linha do tempo
+                </md-tooltip>
+              </md-button>
+              <md-button class="md-button" ng-click="changeActiveTab('statistics')">
+                <i style="font-size: 1.5em;" class="fa fa-line-chart" aria-label="Estatísticas"></i>
+                <md-tooltip>
+                  Estatísticas
+                </md-tooltip>
+              </md-button>
               <span flex></span>
-              <md-button class="md-icon-button" ng-click="close()"><i style="font-size: 1.5em;" class="fa fa-chevron-left" aria-label="Close statistics menu"></i></md-button>
+              <md-button class="md-icon-button" ng-click="close()"><i style="font-size: 1.5em;" class="fa fa-chevron-left" aria-label="Fechar"></i></md-button>
             </div>
           </md-toolbar>
           <md-content layout-padding style="height: 100%;">
             <div id="timeline" ng-show="activeTab === 'timeline'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
               <div class="repeat-parent" ng-repeat="marker in timelineMarkers | orderBy:'creationDate':true">
                 <div class="timeline-item">
-                  <div class="timeline-icon"> <i class="fa fa-bug"></i> </div>
+                  <div class="timeline-icon"> <img width="40px" height="40px" ng-src="{{StatsCtrl.getCaseIconFromMarkerType(marker.type)}}"></img></i> </div>
                   <div class="timeline-content right" ng-click="panToMarker(marker)">
                     <h4 ng-bind="::marker.userName"></h4>
                     <p ng-bind="::marker.description"></p>
@@ -63,19 +72,14 @@
             
             <div id="statistics" ng-show="activeTab === 'statistics'" vs-repeat infinite-scroll="loadMoreTimelineItems()" infinite-scroll-distance="3" infinite-scroll-parent="true">
               <!--TODO: ADD MODAFUCKING AWESOME CHARTS: cases by city, cases by neighbourhood, cases by distance (this one needs to search from backend)-->
-              <!--<h2 style="margin-top: -10px;"><b>Estatísticas para {{currentCity || 'Belo Horizonte'}}</b></h2>-->
               <p style="margin-top: -8px;">Nos últimos 3 meses foram registrados <b ng-bind="lastMonthsMarkersCount + ' casos'"></b> em <span ng-bind="currentCity || 'Belo Horizonte'"></span></p>
-              <canvas id="cases-type-by-city" class="chart chart-pie" chart-data="casesTypeByCity"
-                chart-labels="typesByCity" chart-click="onClick"
-                chart-colours="['#96F7BA', '#CA3838', '#E2DA7C', '#6390DB']">
-              </canvas>
+              
+              <highchart id="cases-type-by-city" config="casesTypeConfig" class="span10" style="width: 380px; height: 200px;"></highchart>
               
               <p>Ranking dos bairros de <span ng-bind="currentCity || 'Belo Horizonte'"></span></p>
               
-              <canvas id="cases-by-neighbourhood" class="chart chart-bar" chart-data="casesByNeighbourhood"
-                chart-labels="neighbourhoodsByCity"
-                chart-click="onClick" >
-              </canvas>
+              <highchart id="cases-by-neighbourhood" config="casesByNeighbourhoodConfig" class="span10" style="width: 380px; height: 400px;"></highchart>
+              
               
               <div style="height: 50px; width: 10px;"></div>
             </div>
@@ -106,8 +110,8 @@
   <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js "></script>
   <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js "></script>
   <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js "></script>
-  <script src="bower_components/Chart.js/Chart.js"></script>
-  <script src="bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
+  <script src="bower_components/highcharts/highcharts.js"></script>
+  <script src="bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
   <script src="bower_components/lodash/dist/lodash.min.js "></script>
   <script src="assets/js/vendor/vs-repeat.js "></script>
 
