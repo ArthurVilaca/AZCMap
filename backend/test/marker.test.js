@@ -16,7 +16,7 @@ describe('Marker api endpoint', () => {
     server.close(done);
   });
   
-  it('Request to api/marker/all should return all markers', done => {
+  it('Request to api/marker/all should return an array when there is no marker', done => {
     request(server)
       .get('/api/marker/all')
       .expect(200)

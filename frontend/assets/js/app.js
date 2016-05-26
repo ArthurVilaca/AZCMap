@@ -10,11 +10,13 @@
   };
     
   //Config the angular google maps to use our key
-  app.config(function(uiGmapGoogleMapApiProvider) {
+  app.config(function(uiGmapGoogleMapApiProvider, ChartJsProvider) {
     uiGmapGoogleMapApiProvider.configure({
         key: 'AIzaSyBHdrTrrlUvUOMsU7SdCvZgKEUvutZL4HQ',
         libraries: 'places'
     });
+    
+    ChartJsProvider.setOptions({ colours : [ '#2979FF', '#2B9AF2', '#EE5555', '#448AFF'] });
   });
   
   app.run(['$templateCache', function ($templateCache) {
@@ -237,9 +239,6 @@
   // Testing the chart
   $scope.typesByCity = ["Foco do mosquito", "Dengue", "Chikungunya", "Zika"];
   $scope.casesTypeByCity = [];
-  $scope.onClick = function (points, evt) {
-    console.log(points, evt);
-  };
   
   $scope.$watch('markers.length', function (newLength, oldLength) {
     if (newLength && newLength !== oldLength) {

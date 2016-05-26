@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="zicaMap">
+<html>
 
 <head>
   <title>ZicaMap</title>
@@ -7,17 +7,17 @@
   <meta name="viewport" content="initial-scale=1.0">
   <link rel="stylesheet" href="assets/css/styles.css"></link>
   <link rel="stylesheet" href="assets/css/timeline.css"></link>
-  <script src="bower_components/socket.io-client/socket.io.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css">
-  <link href="http://db.onlinewebfonts.com/c/737bf92a1c2df108cc14f74f8c8d3b6d?family=LeviReBrushed" rel="stylesheet" type="text/css"
-  />
+  <link href="http://db.onlinewebfonts.com/c/737bf92a1c2df108cc14f74f8c8d3b6d?family=LeviReBrushed" rel="stylesheet" type="text/css"/>
+  
+  <script src="assets/dist/main.min.js"></script>
 
 </head>
 
-<body ng-controller="MapCtrl as MapCtrl">
+<body ng-app="zicaMap" ng-controller="MapCtrl as MapCtrl">
 
   <section>
     <div id="main-box">
@@ -99,25 +99,6 @@
     </div>
   </section>
 
-  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-  <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
-
-  <script src="bower_components/angular/angular.min.js "></script>
-  <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js "></script>
-  <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js "></script>
-  <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js "></script>
-  <script src="bower_components/Chart.js/Chart.js"></script>
-  <script src="bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
-  <script src="bower_components/lodash/dist/lodash.min.js "></script>
-  <script src="assets/js/vendor/vs-repeat.js "></script>
-
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js "></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js "></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js "></script>
-  <!--Last version of angular material sidenav will show backdrop even if disableBackDrop is set in the directive, so we will use ours for now-->
-  <script src="assets/js/vendor/angular-material.js "></script>
-
-  <script src="assets/js/app.js "></script>
 
 </body>
 

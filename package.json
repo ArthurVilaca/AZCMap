@@ -1,0 +1,14 @@
+{
+  "name": "zica-map",
+  "version": "0.1.0",
+  "description": "A map",
+  "dependencies": {},
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.1",
+    "load-grunt-tasks": "^3.5.0"
+  }
+}
