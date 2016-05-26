@@ -3,4 +3,3 @@
 node_modules
 backend/node_modules
 backend/coverage
-frontend/bower_components
