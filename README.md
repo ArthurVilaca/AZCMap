@@ -1,6 +1,6 @@
 # AZCMap
 
-A collaborative map to keep track of aedes aegypti threats. [See the project running.](http://azcmap.bitnamiapp.com/)
+A collaborative map to keep track of aedes aegypti threats. [See the project running.](http://azcmap.tk/)
 
 ## How to contribute from scratch
 
