@@ -1,6 +1,6 @@
 # AZCMap
 
-A collaborative map to keep track of aedes aegypti threats.
+A collaborative map to keep track of aedes aegypti threats. [See the project running.](http://azcmap.bitnamiapp.com/)
 
 ## How to contribute from scratch
 
@@ -14,38 +14,58 @@ Download and install mongodb: https://www.mongodb.org/downloads#production
 
 ### Setting up your environment to start coding
 
-Create a github account.
 
-Open git bash (should be installed on your computer at this point).
+**1)** Create a github account.
 
-Go to a folder of your choice to put the application repository. Example:
+
+#### Clonning the project into your computer
+
+**1)** Open Git Bash (should be installed on your computer at this point).
+
+**2)** Go to a folder of your choice to put the application repository. Example:
 
 ```
 $ cd /e/Repos
 ```
 
-run the following command:
+and run the following command:
 
 ```
 $ git clone https://github.com/ArthurVilaca/AZCMap.git
 ```
 
-Now you have the repository in your local machine. All you need to do is run the mongodb server and start your node server.
+Now you have the repository in your local machine. 
 
-Choose a partition of your choice and add to its root directory a folder called 'data', then inside of data add a folder called 'db'.
+#### Starting MongoDB
+
+**1)** Choose a partition of your choice and add to its root directory a folder called 'data', then inside of data add a folder called 'db'.
 This folder will be used to store your mongo database information.
-Exemple: C:\data\db
+Example: *C:\data\db*
 
-Go to the partition you've chosen to run the mongo server, then run 'mongod'. Example:
+**2)** Go to the partition you've chosen to run the mongo server, then run `mongod`. Example:
 
 ```
 $ cd /c/
 $ mongod
 ```
 
-Open another instance of git bash.
+#### Preparing development environment
+For run node in the project, you first need to install all project's dependencies and tools. You have to open a new instance of Git Bash, since Mongo's one needs to keep running.
 
-Go to the folder where the repository is cloned (/e/Repos/AZCMap in this example case).
+**1)** First, go to the project's root folder:
+```
+$ cd /e/Repos/AZCMap
+```
+
+**2)** Use `$ npm install` for install all dependencies.
+**3)** Navigate to the backend folder:
+```
+$ cd backend
+```
+**4)** And again, run `$npm install` for install all backend dependencies.
+
+#### Starting NodeJS
+**1)** Go to the folder where the repository is cloned (/e/Repos/AZCMap in this example case).
 
 Run the following command to start the node server:
 
@@ -57,7 +77,7 @@ Thats it, you can go to localhost:3000 in your browser and the application shoul
 
 ### Creating a branch and pushing
 
-open git bash.
+Open Git Bash.
 
 Go to the folder where the repository is located (e.g: /c/Repos/AZCMap)
 
@@ -70,7 +90,3 @@ $ git add -A
 $ git commit -m "commit message"
 $ git push origin branch-name
 ```
-
-
-
-
