@@ -21,23 +21,16 @@ i.fa {
 }
 
 #logo {
-	width: 50px;
-	display: inline-flex;
+  height: 60px;
+  display: inline-flex;
+  padding: 6px;
 }
 
-@media screen and (max-width: 480px) {
-    #logoTitle {
-			display: none;
-		}
-		#logo {
-			left: 50px;
-		}
-}
 
-#logoTitle {
-	font-family: LeviReBrushed;
-	font-size: 1.4em;
-	padding: 13px;
+@media screen and (max-width: 350px) {
+  #logo {
+    padding: 12px;
+  }
 }
 
 
