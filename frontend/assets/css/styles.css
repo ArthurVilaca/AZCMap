@@ -22,14 +22,18 @@ i.fa {
 
 #logo {
   height: 60px;
-  display: inline-flex;
-  padding: 6px;
 }
 
 
 @media screen and (max-width: 350px) {
   #logo {
-    padding: 12px;
+    height: 45px;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 351px) {
+  #logo {
+    height: 50px;
   }
 }
 
