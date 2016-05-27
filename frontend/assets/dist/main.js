@@ -36402,12 +36402,14 @@ a.$watch(b,function(b){return function(c,d){var e;return!_.isEqual(c,d)||b.first
   $scope.casesByNeighbourhoodConfig = {
     options: {
       chart: {
-        type: 'column'
+        type: 'column',
+        zoomType: 'x'
       }
     },
     xAxis: {
       labels: {
         enabled: true,
+        rotation: -45,
         formatter: function getLabelFromValue() {
           return $scope.casesByNeighbourhoodConfig.series[0].data[this.value][0];
         }
