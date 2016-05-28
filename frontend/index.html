@@ -25,7 +25,7 @@
           <md-button class="md-icon-button" ng-click="toggleLeft();" aria-label="Settings">
             <i class="fa fa-users"></i>
           </md-button>
-          <span flex></span><img src="assets/img/banner.png" alt="Minha Figura" id="logo">
+          <span flex></span><img src="assets/img/banner.png" alt="Logo AZC" id="logo">
           <span flex></span>
           <md-button class="md-icon-button" aria-label="More">
             <i class="fa fa-ellipsis-v"></i>
@@ -91,13 +91,8 @@
           <i style="vertical-align: middle" class="fa fa-plus"></i>
         </md-button>
       </div>
-      <ui-gmap-google-map center="map.center" " events="MapCtrl.mapEvents " control="map.control " options="MapCtrl.options
+      <ui-gmap-google-map id="main-map" center="map.center" " events="MapCtrl.mapEvents " control="map.control " options="MapCtrl.options
       " zoom="map.zoom ">
-        <!--Markers are now added dinamically. Only markers that fit the map bounds are shown-->
-        <!--<ui-gmap-marker ng-repeat="marker in markers track by marker._id " coords="::marker.location.coordinates
-      " options="::marker.options " events="::marker.events "
-        idkey="::marker._id ">-->
-        </ui-gmap-marker>
       </ui-gmap-google-map>
     </div>
   </section>
