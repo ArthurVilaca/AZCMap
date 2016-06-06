@@ -309,7 +309,7 @@
         enabled: true,
         rotation: -45,
         formatter: function getLabelFromValue() {
-          return $scope.casesByNeighbourhoodConfig.series[0].data[this.value][0];
+          return $scope.casesByNeighbourhoodConfig.series[0].data[this.value]? $scope.casesByNeighbourhoodConfig.series[0].data[this.value][0] : '';
         }
       }
     },
@@ -403,6 +403,9 @@
         }
         
       });
+      
+      $scope.casesTypeConfig.getHighcharts().redraw();
+      $scope.casesByNeighbourhoodConfig.getHighcharts().redraw();
       
     }
   });
